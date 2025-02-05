@@ -6,7 +6,7 @@ executables = [
         script="app/main.py",  # Caminho para o arquivo principal do seu projeto
         base="Win32GUI",  # Para aplicativos GUI (remova para CLI)
         target_name="wys_pdv.exe",  # Nome do executável gerado
-        icon="app/assets/icons/wys_icon.ico",  # Caminho para o ícone
+        icon="app/assets/icons/wys_real.ico",  # Caminho para o ícone
     )
 ]
 

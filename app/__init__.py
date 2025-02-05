@@ -1,1 +1,1 @@
-from app.ui.desktop.main_ui import *
+from ui.desktop.first_ui import *
