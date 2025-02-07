@@ -3,17 +3,17 @@ import tkinter as tk
 from tkinter import ttk
 from app.utils.styles import *
 
-class SalesScreen():
-    def __init__(self, parent):
-        self.window = tk.Toplevel(parent)
-        self.window.title("Tela de Vendas")
-        self.window.geometry("600x400")
-        self.window.resizable(False, False)
+class sales_screen(ttk.Frame):
+    def __init__(self, parent, controller):
+        super().__init__(parent)
+        self.controller = controller  # Classe Application
 
-        # Criar um frame principal
-        self.main_frame = ttk.Frame(self.window, padding=20, style='MainFrame.TFrame')
-        self.main_frame.pack(fill="both", expand=True)
+        upper_frame = controller.upper_frame_create(self)
+        controller.upper_frame_widget(upper_frame)
+        self.main_frame = controller.main_frame_create(self)
+        self.main_frame_widget()
 
+    def main_frame_widget(self):
         # Criar título
         self.title = ttk.Label(
             self.main_frame,
@@ -30,6 +30,6 @@ class SalesScreen():
             text="Voltar",
             width=15,
             style='Leave.MainBt.TButton',
-            command=self.window.destroy  # Fecha a janela
+            command= self.controller.go_back  # Fecha a janela
         )
         self.back_button.pack(pady=10)

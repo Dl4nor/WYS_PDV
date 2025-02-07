@@ -2,20 +2,16 @@ import os
 import tkinter as tk
 from tkinter import ttk
 from app.utils.styles import *
-from app.ui.desktop.sells_ui import SalesScreen
+from app.ui.desktop.sells_ui import sales_screen
 
 # Classe principal para gerar uma janela
-class Home_screen():
-    def __init__(self, window):
-        self.window = window
-        self.main_frame_create()
+class home_screen(ttk.Frame):
+    def __init__(self, parent, controller):
+        super().__init__(parent)
+        self.controller = controller # Classe Application
+
+        self.main_frame = controller.main_frame_create(self)
         self.main_frame_widgets()
-
-    def main_frame_create(self):
-        # Criar frame principal
-
-        self.main_frame = ttk.Frame(self.window, padding=20, style='MainFrame.TFrame')
-        self.main_frame.pack(fill="both", expand=True)
 
     def main_frame_widgets(self):
         # Criar título do frame principal
@@ -35,7 +31,7 @@ class Home_screen():
             width=15,
             style='MainBt.TButton',
             padding=10,
-            command=lambda: SalesScreen(self.window)
+            command= lambda: self.controller.show_screen(sales_screen)
         )
         self.sells_button.pack(pady=10)
 
@@ -55,7 +51,7 @@ class Home_screen():
             width=15,
             style='Leave.MainBt.TButton',
             padding=10,
-            command=self.window.destroy
+            command= self.controller.window.destroy
         )
         self.exit_button.pack(pady=10)
 

@@ -2,8 +2,8 @@ import os
 import tkinter as tk
 from tkinter import ttk
 from app.utils.styles import *
-from app.ui.desktop.home_ui import Home_screen
-from app.ui.desktop.sells_ui import SalesScreen
+from app.ui.desktop.home_ui import home_screen
+from app.ui.desktop.sells_ui import sales_screen
 
 
 class Aplication:
@@ -13,9 +13,18 @@ class Aplication:
         self.style_configure()
         self.window_create()
         self.icon_define()
-        self.home = Home_screen(self.window)
+
+        # Definindo o container onde ficarão as páginas
+        self.container = ttk.Frame(self.window)
+        self.container.pack(fill="both", expand=True)
+
+        # Pilha de páginas
+        self.screen_stack = []
+
+        # Mostra a Home screen
+        self.show_screen(home_screen)
         self.window.mainloop()
-        
+
     def style_configure(self):
         # Definindo o tema de toda aplicação
         self.style.theme_use('alt')
@@ -24,6 +33,12 @@ class Aplication:
         self.style.configure(
             'MainFrame.TFrame', 
             background=Colors.violetBackground
+        )
+
+        # Definindo o estilo do upperFrame
+        self.style.configure(
+            'UpperFrame.TFrame',
+            background='#10002B'
         )
 
         # Definindo o estilo do MainBt
@@ -41,8 +56,22 @@ class Aplication:
         )
         self.style.map(
             'Leave.MainBt.TButton',
-            background=[('active', "#c05299")]
+            background=[('active', "#c05299")],
         )
+        self.style.configure(
+            'Back.TButton',
+            background='#10002B',
+            foreground='white',
+            focuscolor='',
+            borderwidth=0,
+            relief="flat",
+            font=Fonts.backButtonFont
+        )
+        self.style.map(
+            'Back.TButton',
+            background=[('active', '#240046')]
+        )
+        
 
     def window_create(self):
         # Criando janela
@@ -60,3 +89,51 @@ class Aplication:
 
         # Definir icone
         self.window.iconbitmap(icon_path)
+
+    def show_screen(self, screen_class):
+        ## Exibe nova tela e esconde a anterior
+        
+        # Se existe uma tela visível, empilha o histórico
+        if self.screen_stack:
+            self.screen_stack[-1].pack_forget()
+
+        # Cria uma nova janela e adiciona na pilha
+        new_screen = screen_class(self.container, self)
+        new_screen.pack(fill="both", expand=True)
+        self.screen_stack.append(new_screen)
+
+    def go_back(self):
+        # Volta para a tela anterior
+
+        if len(self.screen_stack) > 1:
+            # Remove a tela da frente
+            self.screen_stack.pop().pack_forget()
+
+            # Mostra a tela anterior
+            self.screen_stack[-1].pack(fill="both", expand=True)
+
+    def main_frame_create(self, parent):
+        # Criar frame principal
+
+        main_frame = ttk.Frame(parent, padding=20, style='MainFrame.TFrame')
+        main_frame.pack(fill="both", expand=True)
+        return main_frame
+    
+    def upper_frame_create(self, parent):
+        # Cria barra acima com botão voltar
+
+        upper_frame = ttk.Frame(parent, padding=0, height=20, style='UpperFrame.TFrame')
+        upper_frame.pack(fill='x')
+        return upper_frame 
+    
+    def upper_frame_widget(self, upper_frame):
+        # Criar botão de voltar
+        self.back_bt = ttk.Button(
+            upper_frame,
+            text="<",
+            width=2,
+            style='Back.TButton',
+            command= self.go_back
+        )
+        self.back_bt.pack(side="left", padx=1)
+
