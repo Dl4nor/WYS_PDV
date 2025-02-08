@@ -4,15 +4,21 @@ from tkinter import ttk
 from app.utils.styles import *
 from app.ui.desktop.home_ui import home_screen
 from app.ui.desktop.sells_ui import sales_screen
+from ctypes import windll, byref, c_int
+
 
 
 class Aplication:
     def __init__(self):
+        
         self.window = tk.Tk()
         self.style = ttk.Style()
-        self.style_configure()
+        ui_styles.style_configure(self)
         self.window_create()
         self.icon_define()
+
+        # Ativa o modo escuro da barra de título (Windows 10 e 11)
+        self.enable_dark_mode()
 
         # Definindo o container onde ficarão as páginas
         self.container = ttk.Frame(self.window)
@@ -25,53 +31,6 @@ class Aplication:
         self.show_screen(home_screen)
         self.window.mainloop()
 
-    def style_configure(self):
-        # Definindo o tema de toda aplicação
-        self.style.theme_use('alt')
-
-        # Definindo o estilo dos MainFrame
-        self.style.configure(
-            'MainFrame.TFrame', 
-            background=Colors.violetBackground
-        )
-
-        # Definindo o estilo do upperFrame
-        self.style.configure(
-            'UpperFrame.TFrame',
-            background='#10002B'
-        )
-
-        # Definindo o estilo do MainBt
-        self.style.configure(
-            'MainBt.TButton', 
-            background='#C77DFF', 
-            foreground='black', 
-            focuscolor='',
-            font=Fonts.mainButtonFont
-        )
-        self.style.map(
-            'MainBt.TButton',
-            background=[('active', Colors.violetBackground)],
-            foreground=[('active', 'black')]             
-        )
-        self.style.map(
-            'Leave.MainBt.TButton',
-            background=[('active', "#c05299")],
-        )
-        self.style.configure(
-            'Back.TButton',
-            background='#10002B',
-            foreground='white',
-            focuscolor='',
-            borderwidth=0,
-            relief="flat",
-            font=Fonts.backButtonFont
-        )
-        self.style.map(
-            'Back.TButton',
-            background=[('active', '#240046')]
-        )
-        
 
     def window_create(self):
         # Criando janela
@@ -89,6 +48,33 @@ class Aplication:
 
         # Definir icone
         self.window.iconbitmap(icon_path)
+
+    def enable_dark_mode(self): # O importante é que funciona
+        try:
+            hwnd = windll.user32.GetParent(self.window.winfo_id())
+
+            # Tentando aplicar para as diferentes versões do Windows
+            USE_DARK_MODE = 20  # Código do DarkMode para Windows 10 1809 e superior
+            DARK_MODE = c_int(1) # Ativa o modo escuro (1 = ON)
+
+            result = windll.dwmapi.DwmSetWindowAttribute(
+                hwnd,
+                USE_DARK_MODE,
+                byref(DARK_MODE),
+                4
+            )
+
+            # Caso o primeiro valor não funcione, tenta o valor alternativo
+            if result != 0:
+                USE_DARK_MODE = 19  # Código do DarkMode para versões anteriores
+                windll.dwmapi.DwmSetWindowAttribute(
+                    hwnd,
+                    USE_DARK_MODE,
+                    byref(DARK_MODE),
+                    4
+                )
+        except Exception as e:
+            print(f"Falha ao ativar o modo escuro: {e}")
 
     def show_screen(self, screen_class):
         ## Exibe nova tela e esconde a anterior
@@ -136,4 +122,9 @@ class Aplication:
             command= self.go_back
         )
         self.back_bt.pack(side="left", padx=1)
+
+    def upper_frame_construct(self, parent):
+        if len(self.screen_stack) > 0:
+            upper_frame = self.upper_frame_create(parent)
+            self.upper_frame_widget(upper_frame)
 
