@@ -5,10 +5,12 @@ class Colors():
 
 class Fonts():
     mainTitleFont = ("Harlow Solid Italic", 54, "bold")
+    screenTitleFont = ("Harlow Solid Italic", 44, "bold")
     mainButtonFont = ('Georgia', 16, "bold")
     backButtonFont = ('Arial', 12, "bold")
     infoTextFont = ('Georgia', 11, "italic")
     barcodeFont = ('Arial', 17, "bold")
+    quantityFont = ('Arial', 16, "bold")
 
     @staticmethod
     def resize_font(event, parent, widget, font, dividing):
@@ -37,7 +39,7 @@ class ui_styles():
         parent.style.configure(
             'BarcodeFrame.TFrame',
             background=Colors.violetButton,
-            borderwidth=3,
+            borderwidth=5,
             relief='raised'
         )
 

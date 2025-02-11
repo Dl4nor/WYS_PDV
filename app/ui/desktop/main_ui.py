@@ -101,14 +101,14 @@ class Aplication:
     def main_frame_create(self, parent):
         # Criar frame principal
 
-        main_frame = ttk.Frame(parent, padding=20, style='MainFrame.TFrame')
+        main_frame = ttk.Frame(parent, style='MainFrame.TFrame')
         main_frame.pack(fill="both", expand=True)
         return main_frame
     
     def upper_frame_create(self, parent):
         # Cria barra acima com botão voltar
 
-        upper_frame = ttk.Frame(parent, padding=0, height=20, style='UpperFrame.TFrame')
+        upper_frame = ttk.Frame(parent, height=20, style='UpperFrame.TFrame')
         upper_frame.pack(fill='x')
         return upper_frame 
     
