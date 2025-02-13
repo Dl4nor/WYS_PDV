@@ -16,18 +16,16 @@ class sales_screen(ttk.Frame):
         self.barcode_frame_widget()
         self.quantity_frame_create()
         self.quantity_frame_widgets()
-        #
         self.sellList_frame_create()
+        self.sellList_frame_widget()
         #
-
         self.resize_controller()
-
 
 
     def resize_controller(self):
         # Redimenciona dinamicamente o tamanho da fonte dos entrys de quantity_frame
         self.bind_resizeFont_event(
-            [self.quantity_entry, self.uniPrice_entry, self.subtotal_entry],
+            [self.quantity_entry, self.uniPrice_entry, self.subtotal_entry, self.total_price_entry],
             Fonts.quantityFont,
             20
         )
@@ -45,17 +43,114 @@ class sales_screen(ttk.Frame):
             15
         )
 
+        self.bind_resizeFont_event(
+            [self.sellList_treeview],
+            Fonts.treeviewHeadFont,
+            60
+        )
+
+        self.bind_resizeFont_event(
+            [self.confirm_sell_button, self.cancel_sell_button],
+            Fonts.sellsButtonFont,
+            50
+        )
+
     def sellList_frame_create(self):
         # Cria o frame de informações da atual venda
 
         self.sellList_frame = ttk.Frame(self, padding=10, style='BarcodeFrame.TFrame')
-        self.sellList_frame.place(rely=0.305, relx=0.37, relheight=0.6, relwidth=0.53)    
+        self.sellList_frame.place(rely=0.31, relx=0.37, relheight=0.6, relwidth=0.53)    
+
+    def sellList_frame_widget(self):
+        self.sellList_treeview = ttk.Treeview(
+            self.sellList_frame,
+            style='sellList.Treeview', 
+            height=3, 
+            columns=("col1", "col2", "col3", "col4", "col5")
+        )
+
+        self.sellList_treeview.heading("#0", text="")
+        self.sellList_treeview.heading("#1", text="Código")
+        self.sellList_treeview.heading("#2", text="Item")
+        self.sellList_treeview.heading("#3", text="Qnt")
+        self.sellList_treeview.heading("#4", text="Preço")
+        self.sellList_treeview.heading("#5", text="Subtotal")
+
+        self.sellList_treeview.column("#0", width=0, stretch=False)
+        self.sellList_treeview.column("#1", width=70, minwidth=70)
+        self.sellList_treeview.column("#2", width=160, minwidth=160)
+        self.sellList_treeview.column("#3", width=27, minwidth=27)
+        self.sellList_treeview.column("#4", width=55, minwidth=44)
+        self.sellList_treeview.column("#5", width=55, minwidth=44)
+
+        self.sellList_treeview.bind('<Motion>', self.handle_column_resize)
+
+        self.sellList_treeview.place(rely=0.001, relx=0.003, relheight=0.68, relwidth=0.985)
+
+        self.sellList_scrollbar = ttk.Scrollbar(
+            self.sellList_frame,
+            orient='vertical'
+        )
+        self.sellList_treeview.configure(yscroll=self.sellList_scrollbar.set)
+        self.sellList_scrollbar.place(rely=0.001, relx=0.989, relheight=0.68, relwidth=0.01)
+
+        self.total_price_entry = ctk.CTkEntry(
+            self.sellList_frame,
+            corner_radius=20,
+            bg_color=Colors.violetButton,
+            text_color='gray',
+            fg_color='white',
+            justify='center',
+            font=Fonts.quantityFont,
+        )
+        self.total_price_entry.insert(0, "R$ 0,00")
+        self.total_price_entry.configure(state='readonly')
+        self.total_price_entry.place(rely=0.78, relx=0.55, relheight=0.15, relwidth=0.44)
+
+        self.total_price_label = ttk.Label(
+            self.sellList_frame,
+            background=Colors.violetButton,
+            foreground='black',
+            font=Fonts.infoTextFont,
+            text="Total:"
+        )
+        self.total_price_label.place(rely=0.733, relx=0.55)
+
+        self.confirm_sell_button = ttk.Button(
+            self.sellList_frame,
+            text="Vender",
+            style='ConfirmSell.TButton',
+            padding=10,
+            command= lambda: print("Venda efetuada")
+        )
+        self.confirm_sell_button.place(rely=0.78, relx=0.26, relheight=0.15, relwidth=0.28)
+
+        self.cancel_sell_button = ttk.Button(
+            self.sellList_frame,
+            text="Cancelar",
+            style='CancelSell.TButton',
+            padding=10,
+            command= lambda: print("Venda cancelada")
+        )
+        self.cancel_sell_button.place(rely=0.78, relx=0.01, relheight=0.15, relwidth=0.24)
+
+
+    def handle_column_resize(self, event):
+        # impede o redimensionamento da coluna #0
+        if self.sellList_treeview.identify_region(event.x, event.y) == "separator":
+            # Obtém o identificador da coluna
+            column = self.sellList_treeview.identify_column(event.x)
+            
+            # Se for a coluna #0, não permite o redimensionamento
+            if column in ("#0"):
+                return "break"
+
 
     def quantity_frame_create(self):
         # Cria o frame de quantidade do produto vendido
 
         self.quantity_frame = ttk.Frame(self, padding=10, style='BarcodeFrame.TFrame')
-        self.quantity_frame.place(rely=0.305, relx=0.1, relheight=0.6, relwidth=0.25)
+        self.quantity_frame.place(rely=0.31, relx=0.1, relheight=0.6, relwidth=0.25)
 
     def quantity_frame_widgets(self):
         # Cria os widgets do Frame de quantidade
@@ -67,7 +162,6 @@ class sales_screen(ttk.Frame):
             bg_color=Colors.violetButton,
             text_color='black',
             fg_color='white',
-#            style='BarcodeEntry.TEntry',
             justify='right',
             font=Fonts.quantityFont,
         )
@@ -89,7 +183,6 @@ class sales_screen(ttk.Frame):
             fg_color='white',
             text_color='gray',
             bg_color=Colors.violetButton,
-#           style='BarcodeEntry.TEntry',
             justify='right',
             state='normal',
             font=Fonts.quantityFont,
@@ -114,7 +207,6 @@ class sales_screen(ttk.Frame):
             fg_color='white',
             bg_color=Colors.violetButton,
             text_color='gray',
-#            style='BarcodeEntry.TEntry',
             justify='right',
             state='normal',
             font=Fonts.quantityFont,
@@ -136,7 +228,7 @@ class sales_screen(ttk.Frame):
         # Cria o frame do código de barras
 
         self.barcode_frame = ttk.Frame(self, padding=10, takefocus=1, style='BarcodeFrame.TFrame')
-        self.barcode_frame.place(relx=0.1, rely=0.145, relwidth=0.8, relheight=0.15)
+        self.barcode_frame.place(relx=0.1, rely=0.15, relwidth=0.8, relheight=0.15)
 
     def barcode_frame_widget(self):
         # Cria os widgets do Frame do código de barras
@@ -163,7 +255,7 @@ class sales_screen(ttk.Frame):
         # Criar título
         self.title = ttk.Label(
             self.main_frame,
-            text="Tela de Vendas",
+            text="Wys >> Vendas",
             font=Fonts.screenTitleFont,
             justify='center',
             background=Colors.violetBackground
@@ -188,6 +280,4 @@ class sales_screen(ttk.Frame):
                     dividing
                 )
             )
-
-
 

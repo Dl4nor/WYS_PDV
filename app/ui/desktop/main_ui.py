@@ -108,7 +108,7 @@ class Aplication:
     def upper_frame_create(self, parent):
         # Cria barra acima com botão voltar
 
-        upper_frame = ttk.Frame(parent, height=20, style='UpperFrame.TFrame')
+        upper_frame = ttk.Frame(parent, style='UpperFrame.TFrame')
         upper_frame.pack(fill='x')
         return upper_frame 
     
