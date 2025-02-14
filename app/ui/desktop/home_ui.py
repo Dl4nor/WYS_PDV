@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import ttk
 from app.utils.styles import *
 from app.ui.desktop.sells_ui import sales_screen
+from app.ui.desktop.storage_ui import storage_screen 
 
 # Classe principal para gerar uma janela
 class home_screen(ttk.Frame):
@@ -41,7 +42,7 @@ class home_screen(ttk.Frame):
             width=15,
             style='MainBt.TButton',
             padding=10,
-            command=lambda: print("Tela de estoque aberta!")
+            command=lambda: self.controller.show_screen(storage_screen)
         )
         self.storage_button.pack(pady=10)
 

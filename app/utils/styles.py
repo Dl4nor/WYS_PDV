@@ -1,4 +1,6 @@
+import re
 from tkinter import ttk
+import customtkinter as ctk
 
 class Colors():
     violetBackground = '#E0AAFF'
@@ -14,6 +16,7 @@ class Fonts():
     backButtonFont = ('Arial', 12, "bold")
     sellsButtonFont = backButtonFont
     treeviewHeadFont = backButtonFont
+    productNameFont = ('Arial', 12, "normal")
     barcodeFont = ('Arial', 17, "bold")
     quantityFont = ('Arial', 16, "bold")
 
@@ -135,7 +138,6 @@ class ui_styles():
         )
 
         # Definindo o estilo do CancelSellBt
-
         parent.style.configure(
             'CancelSell.TButton',
             background='#df7373',
@@ -147,3 +149,82 @@ class ui_styles():
             'CancelSell.TButton',
             background=[('active', '#e39695')]
         )
+
+        # Definindo o estilo do ClearBt
+        parent.style.configure(
+            'Clear.TButton',
+            background='#C77DFF',
+            focuscolor='',
+            font=Fonts.sellsButtonFont
+        )
+        parent.style.map(
+            'Clear.TButton',
+            background=[('active', Colors.violetBackground)]
+        )
+
+class MonetaryEntry(ctk.CTkEntry):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Valor numérico interno (em centavos)
+        self._value = 0
+        
+        # Configura validação
+        self.bind('<KeyRelease>', self._validate)
+        self.bind('<FocusIn>', self._on_focus_in)
+        self.bind('<FocusOut>', self._on_focus_out)
+        
+        # Inicializa com R$ 0,00
+        self.insert(0, "R$ 0,00")
+    
+    def _validate(self, event):
+        if event.char.isdigit() or event.keysym in ('BackSpace', 'Delete'):
+            # Pega o texto atual removendo formatação
+            current = self.get().replace('R$ ', '').replace('.', '').replace(',', '').replace(' ', '')
+            
+            # Remove zeros à esquerda
+            if current:
+                current = str(int(current))
+            
+            # Converte para centavos
+            if current:
+                value = int(current)
+            else:
+                value = 0
+                
+            # Atualiza valor interno
+            self._value = value
+            
+            # Formata e exibe
+            self._update_display()
+            
+        # Impede caracteres não numéricos
+        return False
+    
+    def _update_display(self):
+        # Converte centavos para reais
+        reais = self._value / 100 if self._value else 0
+        
+        # Formata com R$, separador de milhares e 2 casas decimais
+        texto = f"R$ {reais:,.2f}".replace(',', '@').replace('.', ',').replace('@', '.')
+        
+        # Atualiza display
+        self.delete(0, 'end')
+        self.insert(0, texto)
+    
+    def _on_focus_in(self, event):
+        # Opcional: seleciona todo o texto ao receber foco
+        self.select_range(0, 'end')
+    
+    def _on_focus_out(self, event):
+        # Garante formatação correta ao perder foco
+        self._update_display()
+    
+    def get_value(self):
+        # Retorna o valor em centavos
+        return self._value
+    
+    def set_value(self, centavos):
+        # Define o valor em centavos
+        self._value = centavos
+        self._update_display()

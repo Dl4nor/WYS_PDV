@@ -128,3 +128,22 @@ class Aplication:
             upper_frame = self.upper_frame_create(parent)
             self.upper_frame_widget(upper_frame)
 
+    def bind_resizeFont_event(self, parent, widgets, font, dividing):
+        # Redimenciona o tamanho da fonte com evento <Mudar tamnho da janela>
+        # Primeiro, define a fonte de acordo com o tamanho atual da tela
+        for w in widgets:
+            Fonts.resize_font(None, parent, w, font, dividing)
+
+        # E caso a janela mude de tamanho, redimenciona de acordo com a altura
+        for w in widgets:
+            w.bind(
+                '<Configure>', 
+                lambda e, widget=w: Fonts.resize_font(
+                    e,
+                    parent,
+                    widget, 
+                    font,
+                    dividing
+                )
+            )
+
