@@ -76,6 +76,11 @@ class ui_styles():
             foreground='black',
             font=Fonts.treeviewTupleFont
         )
+        parent.style.map(
+            'sellList.Treeview',
+            background=[('selected', "#C77DFF"), ('active', "#C77DFF")]
+        )
+        
         parent.style.configure(
             'sellList.Treeview.Heading',
             background=Colors.violetBackground,
@@ -228,3 +233,19 @@ class MonetaryEntry(ctk.CTkEntry):
         # Define o valor em centavos
         self._value = centavos
         self._update_display()
+
+    def parse_price(price_text):
+        # Remove a máscara de moeda e retorna um float
+        
+        price_text = price_text.strip()  # Remove espaços extras
+        price_text = re.sub(r"[^\d,\.]", "", price_text)  # Remove tudo que não for número, vírgula ou ponto
+
+        # Se a vírgula for usada como separador decimal, troca por ponto
+        if "," in price_text and "." not in price_text:
+            price_text = price_text.replace(",", ".")
+
+        try:
+            return float(price_text)
+        except ValueError:
+            print("⚠️ Erro: O preço informado não é válido.")
+            return None  # Ou retornar 0.0 dependendo do caso

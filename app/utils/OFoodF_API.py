@@ -11,6 +11,6 @@ class OpenFoodFacts_API():
                 nome_produto = dados['product'].get('product_name', 'Nome não encontrado')
                 return nome_produto
             else:
-                return "Produto não encontrado"
+                return None
         else:
-            return "Erro ao buscar o produto"
+            return None
