@@ -21,7 +21,7 @@ class DBProducts():
         self.db.disconnect()
         return product
     
-    def search_product(self, barcode):
+    def search_product_by_barcode(self, barcode):
         # procura produto pelo barcode
         self.db.connect()
         self.db.cursor.execute("""
@@ -34,13 +34,26 @@ class DBProducts():
         self.db.disconnect()
         return searchStorage
 
+    def search_product_by_name(self, product_name):
+        # Procura o produto pelo nome
+        self.db.connect()
+        self.db.cursor.execute("""
+            SELECT *
+            FROM tb_storage
+            WHERE product_name LIKE '%s'
+            ORDER BY product_name ASC;
+        """ % product_name)
+        searchStorage = [tuple(row) for row in self.db.cursor.fetchall()]
+        self.db.disconnect()
+        return searchStorage
+
     def get_all_products(self):
         # Retorna todos os produtos da loja
         self.db.connect()
         self.db.cursor.execute("""
         SELECT *
         FROM tb_storage
-        ORDER BY product_name
+        ORDER BY product_name ASC;
         """)
         products = [tuple(row) for row in self.db.cursor.fetchall()]
         self.db.disconnect()

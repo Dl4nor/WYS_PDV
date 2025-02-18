@@ -56,6 +56,9 @@ class storage_screen(ttk.Frame):
         self.product_name_entry.insert("1.0", product_name)  # Insere o nome do produto
 
         self.product_price_entry.focus_set()
+
+    def entry_bind_KeyRelease(self, event=None):
+        # Função ao pressionar qualquer tecla no barcode entry
         self.get_searched_storage()
 
     def storage_treeview_bind_doubleclick(self, event=None):
@@ -97,6 +100,7 @@ class storage_screen(ttk.Frame):
         self.barcode_label.place(relx=0.01, rely=0.022)
 
         self.barcode_entry.bind("<Return>", self.barcode_entry_bind_enter)
+        self.barcode_entry.bind("<KeyRelease>", self.entry_bind_KeyRelease)
 
     def storage_frame_create(self):
         # Cria o frame de informações da atual venda
@@ -187,6 +191,7 @@ class storage_screen(ttk.Frame):
 
         self.clear_entries()
         self.get_storage_to_treeview()
+        self.barcode_entry.focus_set()
 
     def delete_product_from_db(self):
         # Deleta um produto do banco de dados
@@ -202,21 +207,39 @@ class storage_screen(ttk.Frame):
 
         self.clear_entries()
         self.get_storage_to_treeview()
+        self.barcode_entry.focus_set()
 
     def clear_entries(self):
         self.barcode_entry.delete(0, tk.END)
         self.product_name_entry.delete("1.0", tk.END)
         self.product_price_entry.set_value(0.0)
 
+    def clear_button_click(self):
+        self.clear_entries()
+        self.get_storage_to_treeview()
+        self.barcode_entry.focus_set()
+
     def get_searched_storage(self):
         product_info = self.get_product_info()
         barcode = f"{product_info['barcode']}%"
+        product_name = f"{product_info['product_name']}%"
 
         self.storage_treeview.delete(*self.storage_treeview.get_children())
 
-        product_list = self.dbP.search_product(barcode)
+        # if barcode and not product_name:
+        #     product_list = self.dbP.search_product_by_barcode(barcode)
+
+        # if product_name and not barcode:
+        #     product_list = self.dbP.search_product_by_name(product_name)
+        
+        # if product_name and barcode:
+        product_name_list = self.dbP.search_product_by_name(product_name)
+        product_barcode_list = self.dbP.search_product_by_barcode(barcode)
+        product_list = list(set(product_barcode_list) & set(product_name_list))
 
         for i in product_list:
+            price = i[3]
+            i = (i[0], i[1], i[2], f"R$ {price}")
             self.storage_treeview.insert("", tk.END, values=i)
 
     def get_storage_to_treeview(self):
@@ -269,6 +292,7 @@ class storage_screen(ttk.Frame):
             wrap="word" 
         )
         self.product_name_entry.place(rely=0.25, relx=0.0, relheight=0.15, relwidth=1)
+        self.product_name_entry.bind("<KeyRelease>", self.entry_bind_KeyRelease)
 
         self.product_name_label = ttk.Label(
             self.infoProduct_frame,
@@ -294,7 +318,7 @@ class storage_screen(ttk.Frame):
             text="Limpar",
             style='Clear.TButton',
             padding=5,
-            command= self.clear_entries
+            command= self.clear_button_click
         )
         self.clear_entry_button.place(rely=0.92, relx=0.0, relheight=0.08, relwidth=0.65)
 
