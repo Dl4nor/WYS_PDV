@@ -1,17 +1,19 @@
-import os
+
 import tkinter as tk
 from tkinter import ttk
-from app.utils.styles import *
-from app.ui.desktop.sells_ui import sales_screen
-from app.ui.desktop.storage_ui import storage_screen 
+from utils.styles import *
+from utils.gnr_components import gnrComponents
+from ui.sells_ui import sales_screen
+from ui.storage_ui import storage_screen
 
 # Classe principal para gerar uma janela
 class home_screen(ttk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, mController):
         super().__init__(parent)
-        self.controller = controller # Classe Application
+        self.mController = mController # Classe mainController
+        Components = gnrComponents(self.mController)
 
-        self.main_frame = controller.main_frame_create(self)
+        self.main_frame = Components.main_frame_create(self)
         self.main_frame_widgets()
 
     def main_frame_widgets(self):
@@ -32,7 +34,7 @@ class home_screen(ttk.Frame):
             width=15,
             style='MainBt.TButton',
             padding=10,
-            command= lambda: self.controller.show_screen(sales_screen)
+            command= lambda: self.mController.show_screen(sales_screen)
         )
         self.sells_button.pack(pady=10)
 
@@ -42,7 +44,7 @@ class home_screen(ttk.Frame):
             width=15,
             style='MainBt.TButton',
             padding=10,
-            command=lambda: self.controller.show_screen(storage_screen)
+            command=lambda: self.mController.show_screen(storage_screen)
         )
         self.storage_button.pack(pady=10)
 
@@ -52,7 +54,7 @@ class home_screen(ttk.Frame):
             width=15,
             style='Leave.MainBt.TButton',
             padding=10,
-            command= self.controller.window.destroy
+            command= self.mController.window.destroy
         )
         self.exit_button.pack(pady=10)
 

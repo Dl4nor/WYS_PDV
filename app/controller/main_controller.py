@@ -1,49 +1,25 @@
 import os
 import tkinter as tk
-from tkinter import ttk
-from app.utils.styles import *
-from app.ui.desktop.home_ui import home_screen
-from app.ui.desktop.sells_ui import sales_screen
+from utils.styles import *
 from ctypes import windll, byref, c_int
 
-
-
-class Aplication:
+class mainController():
     def __init__(self):
-        
-        self.window = tk.Tk()
-        self.style = ttk.Style()
-        ui_styles.style_configure(self)
-        self.window_create()
-        self.icon_define()
-
-        # Ativa o modo escuro da barra de título (Windows 10 e 11)
-        self.enable_dark_mode()
-
-        # Definindo o container onde ficarão as páginas
-        self.container = ttk.Frame(self.window)
-        self.container.pack(fill="both", expand=True)
-
         # Pilha de páginas
         self.screen_stack = []
+        self.window = None
+        self.container = None
 
-        # Mostra a Home screen
-        self.show_screen(home_screen)
-        self.window.mainloop()
-
-
-    def window_create(self):
-        # Criando janela
-        self.window.title("Sistema WYS - PDV")
-        self.window.geometry("800x600")
-        self.window.resizable(True, True)
-        self.window.maxsize(width=1920, height=1080)
-        self.window.minsize(width=800, height=600)
+    def set_window(self, window):
+        self.window = window
+    
+    def set_container(self, container):
+        self.container = container
 
     def icon_define(self):
         # Caminho absoluto para o ícone
         script_dir = os.path.dirname(__file__)  # Diretório onde o script está
-        icon_path = os.path.join(script_dir, "..", "..", "assets", "icons", "wys_t_icon.ico")
+        icon_path = os.path.join(script_dir, "..", "assets", "icons", "wys_t_icon.ico")
         icon_path = os.path.abspath(icon_path)  # Converte para caminho absoluto
 
         # Definir icone
@@ -98,35 +74,15 @@ class Aplication:
             # Mostra a tela anterior
             self.screen_stack[-1].pack(fill="both", expand=True)
 
-    def main_frame_create(self, parent):
-        # Criar frame principal
-
-        main_frame = ttk.Frame(parent, style='MainFrame.TFrame')
-        main_frame.pack(fill="both", expand=True)
-        return main_frame
-    
-    def upper_frame_create(self, parent):
-        # Cria barra acima com botão voltar
-
-        upper_frame = ttk.Frame(parent, style='UpperFrame.TFrame')
-        upper_frame.pack(fill='x')
-        return upper_frame 
-    
-    def upper_frame_widget(self, upper_frame):
-        # Criar botão de voltar
-        self.back_bt = ttk.Button(
-            upper_frame,
-            text="<",
-            width=2,
-            style='Back.TButton',
-            command= self.go_back
-        )
-        self.back_bt.pack(side="left", padx=1)
-
-    def upper_frame_construct(self, parent):
-        if len(self.screen_stack) > 0:
-            upper_frame = self.upper_frame_create(parent)
-            self.upper_frame_widget(upper_frame)
+    def rewrite_entry(self, entry, text, isReadonly=False):
+        if isReadonly:
+            entry.configure(state='normal')
+            entry.delete(0, tk.END)
+            entry.insert(0, text)
+            entry.configure(state='readonly')
+        else:
+            entry.delete(0, tk.END)
+            entry.insert(0, text)
 
     def bind_resizeFont_event(self, parent, widgets, font, dividing):
         # Redimenciona o tamanho da fonte com evento <Mudar tamnho da janela>
@@ -146,4 +102,3 @@ class Aplication:
                     dividing
                 )
             )
-
