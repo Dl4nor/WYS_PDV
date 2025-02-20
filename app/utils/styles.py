@@ -22,22 +22,36 @@ class Fonts():
 
     treeviewTupleFont = ('Arial', 10, "")
     
-
     @staticmethod
     def resize_font(event, parent, widget, font, dividing):
-        # Ajusta o tamanho da fonte com base no tamanho da janela
+        # Ajusta o tamanho da fonte de um widget com base na altura da janela
 
-        new_font_size = parent.winfo_height() // dividing
+        # Garante um tamanho mínimo para a fonte (evita 0 ou valores negativos)
+        new_font_size = max(10, parent.winfo_height() // dividing)
 
         if isinstance(widget, ttk.Treeview):
+            # Ajusta a fonte para as colunas do Treeview (corpo e cabeçalho)
             style = ttk.Style()
-            style.configure(f'{widget.cget('style')}.Heading', font=(font[0], new_font_size, font[2]))
-            style.configure(f'{widget.cget('style')}', font=(font[0], new_font_size, font[2]))
+            treeview_style = widget.cget('style')
+
+            style.configure(f'{treeview_style}.Heading', font=(font[0], new_font_size, font[2]))
+            style.configure(treeview_style, font=(font[0], new_font_size-1, 'normal'))
+
         elif isinstance(widget, ttk.Button):
+            # Ajusta a fonte dos botões ttk
             style = ttk.Style()
-            style.configure(widget.cget('style'), font=(font[0], new_font_size, font[2]))
-        else:
+            button_style = widget.cget('style')
+            style.configure(button_style, font=(font[0], new_font_size, font[2]))
+
+        elif isinstance(widget, (ctk.CTkEntry, ctk.CTkLabel, ctk.CTkTextbox)):
+            # Ajusta a fonte de widgets customtkinter
             widget.configure(font=(font[0], new_font_size, font[2]))
+
+        else:
+            # Ajusta a fonte de widgets padrão Tkinter
+            widget.configure(font=(font[0], new_font_size, font[2]))
+
+        # parent.after(100, lambda: Fonts.resize_font(None, parent, widget, font, dividing))
 
 class ui_styles(): 
     def style_configure(parent):

@@ -94,3 +94,24 @@ class sellsController():
         parent.barcode_entry.delete(0, tk.END)
 
         parent.barcode_entry.focus_set()
+
+    def clear_entries(self, parent):
+        self.mController.rewrite_entry(parent.barcode_entry, "")
+        self.mController.rewrite_entry(parent.quantity_entry, "")
+        self.mController.rewrite_entry(parent.uniPrice_entry, "R$ 0,00", True)
+        self.mController.rewrite_entry(parent.subtotal_entry, "R$ 0,00", True)
+
+    def cancel_sell_button_command(self, parent):
+        # Estorna produto da lista de vendas
+        selected_items = parent.sellList_treeview.selection()
+
+        # Caso exista um item selecionado, estorna apenas ele
+        if selected_items:
+            for item in selected_items:
+                parent.sellList_treeview.delete(item)
+
+        # Caso não, estorna a lista completa
+        else:
+            parent.sellList_treeview.delete(*parent.sellList_treeview.get_children())
+            self.clear_entries(parent)
+            self.total_calculate(parent)

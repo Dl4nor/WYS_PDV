@@ -95,7 +95,7 @@ class storage_screen(ttk.Frame):
         self.storage_treeview.column("#1", width=60, minwidth=60, stretch=False, anchor="center")
         self.storage_treeview.column("#2", width=100, minwidth=100, stretch=False, anchor="w")
         self.storage_treeview.column("#3", width=160, minwidth=160, anchor="w")
-        self.storage_treeview.column("#4", width=80, minwidth=80, stretch=False, anchor="center")
+        self.storage_treeview.column("#4", width=80, minwidth=80, stretch=False, anchor='w')
 
         self.storage_treeview.bind('<Motion>', self.handle_column_resize)
         self.storage_treeview.bind('<Double-1>', lambda event: self.controller.storage_treeview_bind_doubleclick(self, event))

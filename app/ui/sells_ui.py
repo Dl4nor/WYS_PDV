@@ -5,6 +5,7 @@ import customtkinter as ctk
 from controller.sells_controller import sellsController
 from utils.gnr_components import gnrComponents
 from utils.styles import *
+from models.db_sells import DBSells
 from models.db_storage import DBProducts
 
 class sales_screen(ttk.Frame):
@@ -15,6 +16,7 @@ class sales_screen(ttk.Frame):
 
         self.Components = gnrComponents(self.mController)
         self.bdP = DBProducts()
+        self.dbS = DBSells()
 
         self.Components.upper_frame_construct(self)
         self.main_frame = self.Components.main_frame_create(self)
@@ -224,7 +226,7 @@ class sales_screen(ttk.Frame):
             text="Vender",
             style='ConfirmSell.TButton',
             padding=10,
-            command= lambda: print("Venda efetuada")
+            command= lambda: self.dbS.add_sell(self)
         )
         self.confirm_sell_button.place(rely=0.78, relx=0.26, relheight=0.15, relwidth=0.28)
 
@@ -233,7 +235,7 @@ class sales_screen(ttk.Frame):
             text="Estornar",
             style='CancelSell.TButton',
             padding=10,
-            command= lambda: print("Venda cancelada")
+            command= lambda: self.controller.cancel_sell_button_command(self)
         )
         self.cancel_sell_button.place(rely=0.78, relx=0.01, relheight=0.15, relwidth=0.24)
 
