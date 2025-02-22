@@ -87,12 +87,13 @@ class ui_styles():
         parent.style.configure(
             'sellList.Treeview',
             background=Colors.violetBackground,
+            fieldbackground=Colors.violetBackground,
             foreground='black',
             font=Fonts.treeviewTupleFont
         )
         parent.style.map(
             'sellList.Treeview',
-            background=[('selected', "#C77DFF"), ('active', "#C77DFF")]
+            background=[('selected', "#C77DFF")]
         )
         
         parent.style.configure(

@@ -125,7 +125,7 @@ class storageController():
 
         for i in product_list:
             price = i[3]
-            i = (i[0], i[1], i[2], f"R$ {price}")
+            i = (i[0], i[1], i[2], f"R$ {price:.2f}")
             parent.storage_treeview.insert("", tk.END, values=i)
 
     def get_storage_to_treeview(self, parent):

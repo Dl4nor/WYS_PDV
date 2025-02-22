@@ -7,8 +7,36 @@ class sellsController():
         self.dbP = DBProducts()
         self.mController = mainController()
 
+    def sellList_treeview_bind_TreeviewSelect(self, parent, event=None):
+        # Evento ao clicar em um elemento de sellLsit_treeview
+
+        selected_item = parent.sellList_treeview.selection()
+
+        if selected_item:
+            for item in selected_item:
+                values = parent.sellList_treeview.item(item, "values")
+
+                if values:
+                    barcode = values[0]
+                    product_name = values[1]
+                    quantity = f"{values[2]}".replace(".", ",")
+                    price = values[3]
+                    subtotal = values[4]
+
+                    self.mController.rewrite_entry(parent.barcode_entry, barcode)
+                    self.mController.rewrite_entry(parent.product_name_entry, product_name, True)
+                    self.mController.rewrite_entry(parent.quantity_entry, quantity)
+                    self.mController.rewrite_entry(parent.uniPrice_entry, price, True)
+                    self.mController.rewrite_entry(parent.subtotal_entry, subtotal, True)
+
     def quantity_entry_bind_enter(self, parent, event=None):
-        items = parent.sellList_treeview.get_children()
+
+        barcode = parent.barcode_entry.get().strip()
+
+        if barcode:
+            items = parent.sellList_treeview.selection()
+        else:
+            items = parent.sellList_treeview.get_children()
 
         if items:
             last_item_id = items[-1]
@@ -16,15 +44,19 @@ class sellsController():
 
             if values:
                 values_list = list(values)
+                price = float(values[3].replace("R$", "").replace(",", "."))
 
-                new_qnt = parent.quantity_entry.get().strip()
-                new_subtotal = parent.subtotal_entry.get().strip()
+                new_qnt = float(parent.quantity_entry.get().replace(",", ".").strip())
+                new_subtotal = new_qnt*price
 
-                values_list[2] = new_qnt
-                values_list[4] = new_subtotal
+                values_list[2] = f"{int(new_qnt) if new_qnt.is_integer() else new_qnt}"
+                values_list[4] = f"R$ {new_subtotal:.2f}".replace(".", ",")
 
                 parent.sellList_treeview.item(last_item_id, values=tuple(values_list))
+                parent.barcode_entry.focus_set()
+                parent.sellList_treeview.selection_remove(parent.sellList_treeview.selection())
                 self.total_calculate(parent)
+                self.clear_entries(parent)
 
     def quantity_entry_bind_KeyRelease(self, parent, event=None):
         # Ação ao atualizar o preço
@@ -34,7 +66,7 @@ class sellsController():
         if not quantity_text:
             quantity = 0
         else:
-            quantity = int(parent.quantity_entry.get().strip())
+            quantity = float(parent.quantity_entry.get().replace(",", ".").strip())
 
         new_subtotal = price*quantity
         new_subtotal_text = f"R$ {new_subtotal:.2f}".replace(".", ",")
@@ -66,6 +98,7 @@ class sellsController():
             self.mController.rewrite_entry(parent.quantity_entry, quantity)
             self.mController.rewrite_entry(parent.uniPrice_entry, price_text, True)
             self.mController.rewrite_entry(parent.subtotal_entry, subtotal_text, True)
+            self.mController.rewrite_entry(parent.product_name_entry, product_name, True)
         else:
             print("⚠️ Produto não encontrado!")
 
@@ -100,6 +133,7 @@ class sellsController():
         self.mController.rewrite_entry(parent.quantity_entry, "")
         self.mController.rewrite_entry(parent.uniPrice_entry, "R$ 0,00", True)
         self.mController.rewrite_entry(parent.subtotal_entry, "R$ 0,00", True)
+        self.mController.rewrite_entry(parent.product_name_entry, "Nome do produto", True)
 
     def cancel_sell_button_command(self, parent):
         # Estorna produto da lista de vendas
@@ -113,5 +147,7 @@ class sellsController():
         # Caso não, estorna a lista completa
         else:
             parent.sellList_treeview.delete(*parent.sellList_treeview.get_children())
-            self.clear_entries(parent)
-            self.total_calculate(parent)
+        
+        parent.barcode_entry.focus_set()
+        self.clear_entries(parent)
+        self.total_calculate(parent)
