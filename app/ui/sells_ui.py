@@ -175,14 +175,14 @@ class sales_screen(ttk.Frame):
         self.help_label = ttk.Label(
             self.shortcut_frame,
             background=Colors.violetButton,
-            foreground='white',
-            font=Fonts.infoTextFont,
+            foreground='lightgray',
+            font=Fonts.shortcutFont,
             text=
             "F1 - Ajuda\n\n"
-            "F2 - Cadastro rápido\n\n"
-            "F3 - Fechar caixa\n\n",
+            "F2 - Cancelar venda\n\n"
+            "F3 - Confirmar venda\n\n",
         )
-        self.help_label.place(rely=0.01, relx=0.05)
+        self.help_label.pack(padx=0.5)
 
     def sellList_frame_create(self):
         # Cria o frame de informações da atual venda
@@ -238,7 +238,6 @@ class sales_screen(ttk.Frame):
             fg_color='white',
             justify='center',
             font=Fonts.quantityFont,
-            
         )
         self.total_price_entry.insert(0, "R$ 0,00")
         self.total_price_entry.configure(state='readonly')
@@ -305,39 +304,18 @@ class sales_screen(ttk.Frame):
                 return "break"
 
     def resize_controller(self):
-        # Redimenciona dinamicamente o tamanho da fonte dos entrys de quantity_frame
         self.mController.bind_resizeFont_event(
             self,
-            [self.quantity_entry, self.uniPrice_entry, self.subtotal_entry, self.total_price_entry],
-            Fonts.quantityFont,
-            20
-        )
-
-        # Redimenciona dinamicamente o tamanho da fonte do barcodeEntry
-        self.mController.bind_resizeFont_event(
-            self,
-            [self.barcode_entry],
-            Fonts.barcodeFont,
-            30
-        )
-
-        self.mController.bind_resizeFont_event(
-            self,
-            [self.title],
-            Fonts.screenTitleFont,
-            15
-        )
-
-        self.mController.bind_resizeFont_event(
-            self,
-            [self.sellList_treeview],
-            Fonts.treeviewHeadFont,
-            60
-        )
-
-        self.mController.bind_resizeFont_event(
-            self,
-            [self.confirm_sell_button, self.cancel_sell_button],
-            Fonts.sellsButtonFont,
-            50
+            {
+                self.quantity_entry: (Fonts.quantityFont, 25),
+                self.uniPrice_entry: (Fonts.quantityFont, 25),
+                self.subtotal_entry: (Fonts.quantityFont, 25),
+                self.total_price_entry: (Fonts.quantityFont, 25),
+                self.barcode_entry: (Fonts.barcodeFont, 30),
+                self.title: (Fonts.screenTitleFont, 15),
+                self.sellList_treeview: (Fonts.treeviewHeadFont, 60),
+                self.confirm_sell_button: (Fonts.sellsButtonFont, 60),
+                self.cancel_sell_button: (Fonts.sellsButtonFont, 60),
+                self.help_label: (Fonts.shortcutFont, 51),
+            }
         )

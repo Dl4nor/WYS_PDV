@@ -5,12 +5,14 @@ import customtkinter as ctk
 class Colors():
     violetBackground = '#E0AAFF'
     violetButton = '#9D4EDD'
+    xlsxHeader = '#C77DFF'
 
 class Fonts():
     mainTitleFont = ("Harlow Solid Italic", 54, "bold")
     screenTitleFont = ("Harlow Solid Italic", 44, "bold")
 
     infoTextFont = ('Georgia', 11, "italic")
+    shortcutFont = ('Georgia', 11, 'italic bold')
     mainButtonFont = ('Georgia', 16, "bold")
 
     backButtonFont = ('Arial', 12, "bold")
@@ -18,7 +20,7 @@ class Fonts():
     treeviewHeadFont = backButtonFont
     productNameFont = ('Arial', 12, "normal")
     barcodeFont = ('Arial', 17, "bold")
-    quantityFont = ('Arial', 16, "bold")
+    quantityFont = ('Arial', 28, "bold")
 
     treeviewTupleFont = ('Arial', 10, "")
     
@@ -27,7 +29,7 @@ class Fonts():
         # Ajusta o tamanho da fonte de um widget com base na altura da janela
 
         # Garante um tamanho mínimo para a fonte (evita 0 ou valores negativos)
-        new_font_size = max(10, parent.winfo_height() // dividing)
+        new_font_size = min(max(10, parent.winfo_height() // dividing), 72)
 
         if isinstance(widget, ttk.Treeview):
             # Ajusta a fonte para as colunas do Treeview (corpo e cabeçalho)

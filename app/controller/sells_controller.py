@@ -6,6 +6,7 @@ class sellsController():
     def __init__(self):
         self.dbP = DBProducts()
         self.mController = mainController()
+        self.brazil_tz = self.mController.brazil_tz
 
     def sellList_treeview_bind_TreeviewSelect(self, parent, event=None):
         # Evento ao clicar em um elemento de sellLsit_treeview
@@ -86,7 +87,7 @@ class sellsController():
             subtotal = quantity * price
             subtotal_text = f"R$ {subtotal:.2f}".replace(".", ",")
             
-            parent.sellList_treeview.insert("", tk.END, values=(
+            parent.sellList_treeview.insert("", 0, values=(
                     barcode, 
                     product_name, 
                     quantity, 

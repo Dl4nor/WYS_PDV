@@ -1,7 +1,8 @@
 import os
-from datetime import datetime
+from datetime import datetime, date
 import pytz
 import sqlite3
+from services.Export_to_xlsx import exportToXlsx
 from controller.sells_controller import sellsController
 from app.models.db_controller import DBController
 
@@ -9,6 +10,7 @@ class DBSells():
     def __init__(self):
         self.db = DBController()
         self.sController = sellsController()
+        self.expxlsx = exportToXlsx()
         
     def add_sell(self, parent):
         # Adiciona uma nova venda efetuada
@@ -21,13 +23,12 @@ class DBSells():
             # Registra uma nova venda e recupera seu id
             self.db.connect()
 
-            brasil_tz = pytz.timezone("America/Sao_Paulo")
-            brasil_now = datetime.now(brasil_tz).strftime("%Y-%m-%d %H:%M:%S")
+            time_now = datetime.now(self.sController.brazil_tz).strftime("%Y-%m-%d %H:%M:%S")
             
             self.db.cursor.execute("""
                 INSERT INTO tb_sells (sell_date)
                 VALUES (?)
-            """, (brasil_now, ))
+            """, (time_now, ))
             sell_id = self.db.cursor.lastrowid
 
             for item in parent.sellList_treeview.get_children():
@@ -64,3 +65,11 @@ class DBSells():
             print(f"❌ Erro: Venda não cadastrada - {e}")
         finally:
             self.db.disconnect()
+
+            output_dir = f"Fechamentos/{date.today().month} - {date.today().year}/"
+            output_file = os.path.join(output_dir, f"Vendas - {date.today()}.xlsx")
+
+            # Criar diretório se não existir
+            os.makedirs(output_dir, exist_ok=True)
+            
+            self.expxlsx.export_sales_to_excel(date.today(), output_file)

@@ -204,38 +204,15 @@ class storage_screen(ttk.Frame):
                 return "break"
 
     def resize_controller(self):
-        # Redimenciona dinamicamente o tamanho da fonte dos entrys de quantity_frame
         self.mController.bind_resizeFont_event(
             self,
-            [self.title],
-            Fonts.screenTitleFont,
-            15
-        )
-
-        self.mController.bind_resizeFont_event(
-            self,
-            [self.barcode_entry],
-            Fonts.barcodeFont,
-            30
-        )
-
-        self.mController.bind_resizeFont_event(
-            self,
-            [self.delete_product_button, self.add_product_button, self.clear_entry_button],
-            Fonts.sellsButtonFont,
-            55
-        )
-
-        self.mController.bind_resizeFont_event(
-            self,
-            [self.product_price_entry],
-            Fonts.quantityFont,
-            20
-        )
-
-        self.mController.bind_resizeFont_event(
-            self,
-            [self.product_name_entry],
-            Fonts.productNameFont,
-            35
+            {
+                self.title: (Fonts.screenTitleFont, 15),
+                self.barcode_entry: (Fonts.barcodeFont, 30),
+                self.delete_product_button: (Fonts.sellsButtonFont, 55),
+                self.add_product_button: (Fonts.sellsButtonFont, 55),
+                self.clear_entry_button: (Fonts.sellsButtonFont, 55),
+                self.product_price_entry: (Fonts.quantityFont, 20),
+                self.product_name_entry: (Fonts.productNameFont, 35),
+            }
         )

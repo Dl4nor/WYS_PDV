@@ -2,3 +2,5 @@
 *__pycache__
 *build
 bd_wyspdv.sqlite
+*.xlsx
+Fechamentos/

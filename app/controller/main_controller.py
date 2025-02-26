@@ -1,5 +1,6 @@
 import os
 import tkinter as tk
+import pytz
 from utils.styles import *
 from ctypes import windll, byref, c_int
 
@@ -9,6 +10,11 @@ class mainController():
         self.screen_stack = []
         self.window = None
         self.container = None
+        self.brazil_tz = self.define_time_zone()
+
+    def define_time_zone(self):
+        brasil_tz = pytz.timezone("America/Sao_Paulo")
+        return brasil_tz
 
     def set_window(self, window):
         self.window = window
@@ -84,21 +90,13 @@ class mainController():
             entry.delete(0, tk.END)
             entry.insert(0, text)
 
-    def bind_resizeFont_event(self, parent, widgets, font, dividing):
-        # Redimenciona o tamanho da fonte com evento <Mudar tamnho da janela>
-        # Primeiro, define a fonte de acordo com o tamanho atual da tela
-        for w in widgets:
-            Fonts.resize_font(None, parent, w, font, dividing)
+    def bind_resizeFont_event(self, parent, font):
+        # Aplica a fonte inicial em todos os widgets
+        self.resize_all_fonts(parent, font)
 
-        # E caso a janela mude de tamanho, redimenciona de acordo com a altura
-        for w in widgets:
-            w.bind(
-                '<Configure>', 
-                lambda e, widget=w: Fonts.resize_font(
-                    e,
-                    parent,
-                    widget, 
-                    font,
-                    dividing
-                )
-            )
+        # Evento <Configure> apenas na janela principal
+        parent.bind('<Configure>', lambda e: self.resize_all_fonts(parent, font))
+
+    def resize_all_fonts(self, parent, font):
+        for widget, (font, dividing) in font.items():
+            Fonts.resize_font(None, parent, widget, font, dividing)
