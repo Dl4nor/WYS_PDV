@@ -40,7 +40,7 @@ class DBSells():
                 self.db.cursor.execute("""
                     SELECT id
                     FROM tb_storage
-                    WHERE barcode = ?
+                    WHERE barcode = ? AND is_active = 1
                 """, (barcode, ))
                 product = self.db.cursor.fetchone()
 

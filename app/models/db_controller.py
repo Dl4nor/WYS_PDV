@@ -38,7 +38,8 @@ class DBController():
                     id              INTEGER PRIMARY KEY AUTOINCREMENT,
                     barcode         TEXT UNIQUE NOT NULL,
                     product_name    TEXT NOT NULL,
-                    price           REAL NOT NULL DEFAULT 0.0
+                    price           REAL NOT NULL DEFAULT 0.0,
+                    is_active       INTEGER NOT NULL DEFAULT 1
                 )
             """)
 
@@ -57,7 +58,7 @@ class DBController():
                     quantity        INTEGER NOT NULL DEFAULT 1,
                     total_price     REAL NOT NULL DEFAULT 0.0,
                     FOREIGN KEY (sell_id) REFERENCES tb_sells(id) ON DELETE CASCADE,
-                    FOREIGN KEY (product_id) REFERENCES tb_storage(id)                
+                    FOREIGN KEY (product_id) REFERENCES tb_storage(id)             
                 )
             """)
             self.commit()

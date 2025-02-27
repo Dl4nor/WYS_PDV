@@ -1,11 +1,13 @@
 import tkinter as tk
 from models.db_storage import DBProducts
 from utils.styles import MonetaryEntry
+from controller.main_controller import mainController
 from services.OFoodF_API import OpenFoodFacts_API
 
 class storageController():
     def __init__(self):
         self.dbP = DBProducts()
+        self.mController = mainController()
 
     def barcode_entry_bind_enter(self, parent, event=None):
         # Função ao pressionar ENTER no barcode entry
@@ -93,10 +95,7 @@ class storageController():
         if not product_info["barcode"]:
             return
 
-        self.dbP.delete_product(
-            product_info["barcode"]
-        )
-        print(f"🗑️ O produto '{product_info['product_name']}' foi deletado com sucesso!")
+        self.dbP.delete_product(product_info["barcode"])
 
         self.clear_entries(parent)
         self.get_storage_to_treeview(parent)

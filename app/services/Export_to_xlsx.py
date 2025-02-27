@@ -1,4 +1,4 @@
-import sqlite3
+import os
 import openpyxl
 
 from openpyxl.styles import Font, Border
@@ -32,11 +32,23 @@ class exportToXlsx():
             self.db.disconnect()
             return
 
-        workbook = openpyxl.Workbook()
-        workbook.remove(workbook.active)  
+        if os.path.exists(output_file):
+            workbook = openpyxl.load_workbook(output_file)  # Abre o arquivo existente
+        else:
+            workbook = openpyxl.Workbook()
+            workbook.remove(workbook.active)
 
         for sale_id, sell_date in sales:
-            sheet = workbook.create_sheet(title=f"Venda {sale_id}")
+
+            # Converter string para datetime
+            sell_date_obj = datetime.strptime(sell_date, "%Y-%m-%d %H:%M:%S")
+            sheet_title = f"Venda {sell_date_obj.hour}h{sell_date_obj.minute}m"
+
+            if sheet_title in workbook.sheetnames:
+                print(f"⚠️ Venda {sale_id} já registrada")
+                continue
+
+            sheet = workbook.create_sheet(title=sheet_title)
 
             # Mesclar células das duas primeiras linhas
             sheet.merge_cells('A1:E1')
@@ -44,11 +56,6 @@ class exportToXlsx():
 
             # Adicionar Título (Venda ID) e Subtítulo (Data da venda)
             title_cell = sheet['A1']
-            # title_cell.border = Border(
-            #     bottom=self.thick_border,
-            #     left=self.thick_border if title_cell.column == 1 else None,
-            #     right=self.thick_border if title_cell.column == 5 else None
-            # )
             title_cell.value = f"Venda {sale_id}"
             title_cell.font = Font(size=14, bold=True)
             title_cell.fill = PatternFill(start_color=Colors.violetButton.replace("#", ""), fill_type="solid")
@@ -56,11 +63,6 @@ class exportToXlsx():
 
 
             subtitle_cell = sheet['A2']
-            # subtitle_cell.border = Border(
-            #     bottom=self.thick_border,
-            #     left=self.thick_border if subtitle_cell.column == 1 else None,
-            #     right=self.thick_border if subtitle_cell.column == 5 else None
-            # )
             subtitle_cell.value = f"Data: {sell_date}"
             subtitle_cell.font = Font(size=12, italic=True, bold=True)
             subtitle_cell.fill = PatternFill(start_color=Colors.violetButton.replace("#", ""), fill_type="solid")
@@ -81,10 +83,12 @@ class exportToXlsx():
 
             # Buscar itens vendidos
             self.db.cursor.execute("""
-                SELECT s.product_name, s.barcode, si.quantity, s.price, si.total_price 
+                SELECT s.product_name, s.barcode, SUM(si.quantity), s.price, SUM(si.total_price) 
                 FROM tb_selled_items si
                 JOIN tb_storage s ON si.product_id = s.id
-                WHERE si.sell_id = ?
+                WHERE si.sell_id = ? AND s.is_active = 1
+                GROUP BY s.product_name, s.barcode, s.price
+                ORDER BY SUM(si.quantity) DESC
             """, (sale_id,))
             items = self.db.cursor.fetchall()
 
@@ -104,6 +108,7 @@ class exportToXlsx():
             sheet.append(total_row)
 
             sheet["A" + str(sheet.max_row)].font = Font(bold=True)
+            sheet["E" + str(sheet.max_row)].font = Font(bold=True)
             sheet["E" + str(sheet.max_row)].alignment = Alignment(horizontal='right')
 
             # Ajusta largura das colunas automaticamente
@@ -115,11 +120,16 @@ class exportToXlsx():
                     max_length = max((len(str(cell.value)) for cell in col_cells if cell.value), default=0)
                     sheet.column_dimensions[col_letter].width = max_length + 1
 
+            # Centralizando a coluna 'Código de Barras'
+            for row in sheet.iter_rows(min_row=4, min_col=2, max_col=2):
+                for cell in row:
+                    cell.alignment = Alignment(horizontal='center')
+
             # Centralizar a coluna 'Quantidade'
             for row in sheet.iter_rows(min_row=4, min_col=3, max_col=3):
                 for cell in row:
                     cell.alignment = Alignment(horizontal='center')
-
+            
             # Alinhando a direita a coluna 'Preço unitário'
             for row in sheet.iter_rows(min_row=4, min_col=4, max_col=4):
                 for cell in row:
@@ -132,19 +142,26 @@ class exportToXlsx():
 
             for row in sheet.iter_rows(min_row=1, max_row=sheet.max_row, min_col=1, max_col=5):
                 for cell in row:
-                    cell.alignment = Alignment(horizontal='right')
+                    cell.alignment = Alignment(
+                        horizontal=cell.alignment.horizontal,
+                        vertical=cell.alignment.vertical
+                    )
                     cell.border = Border(
                         left=self.thick_border if cell.column == 1 else None,   # Borda esquerda espessa
                         right=self.thick_border if cell.column == 5 else None,  # Borda direita espessa
                         top=self.thick_border if cell.row == 1 else None,       # Borda superior espessa
                         bottom=self.thick_border if cell.row == sheet.max_row else None,  # Borda inferior espessa
                     )
-
             for row in sheet.iter_rows(min_row=3, max_row=3, min_col=1, max_col=5):
                 for cell in row:
-                    cell.alignment = Alignment(horizontal='right')
+                    cell.alignment = Alignment(
+                        horizontal=cell.alignment.horizontal,
+                        vertical=cell.alignment.vertical
+                    )
                     cell.border = Border(
                         bottom=self.thin_border,  # Borda inferior espessa
+                        left=self.thick_border if cell.column == 1 else self.thin_border,
+                        right=self.thick_border if cell.column == 5 else self.thin_border,
                         top=self.thick_border,
                     )
 

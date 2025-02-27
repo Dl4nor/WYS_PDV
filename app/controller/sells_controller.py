@@ -40,8 +40,8 @@ class sellsController():
             items = parent.sellList_treeview.get_children()
 
         if items:
-            last_item_id = items[-1]
-            values = parent.sellList_treeview.item(last_item_id, "values")
+            first_item_id = items[0]
+            values = parent.sellList_treeview.item(first_item_id, "values")
 
             if values:
                 values_list = list(values)
@@ -53,7 +53,7 @@ class sellsController():
                 values_list[2] = f"{int(new_qnt) if new_qnt.is_integer() else new_qnt}"
                 values_list[4] = f"R$ {new_subtotal:.2f}".replace(".", ",")
 
-                parent.sellList_treeview.item(last_item_id, values=tuple(values_list))
+                parent.sellList_treeview.item(first_item_id, values=tuple(values_list))
                 parent.barcode_entry.focus_set()
                 parent.sellList_treeview.selection_remove(parent.sellList_treeview.selection())
                 self.total_calculate(parent)
@@ -78,7 +78,7 @@ class sellsController():
         # Recupera os itens pelo código de barras e adiciona no treeview
         product = self.dbP.get_product_by_barcode(barcode)
 
-        if product:
+        if product and product['is_active']:
             barcode = product["barcode"]
             product_name = product["product_name"]
             quantity = 1
