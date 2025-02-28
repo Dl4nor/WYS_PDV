@@ -45,6 +45,9 @@ class sales_screen(ttk.Frame):
         )
         self.title.pack(side='top', anchor='n')
 
+        self.bind_all("<F2>", lambda e: self.controller.cancel_sell_button_command(self))
+        self.bind_all("<F3>", lambda e: self.dbS.add_sell(self))
+
     def barcode_frame_create(self):
         # Cria o frame do código de barras
 

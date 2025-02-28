@@ -17,6 +17,9 @@ class storageController():
         product_name = None
         if product:
             product_name = product["product_name"]
+            price_text = f"R$ {product["price"]:.2f}".replace(".", ",")
+        else:
+            price_text = "R$ 0,00"
 
         if not product_name and barcode:
             product_name = OpenFoodFacts_API.search_pname_from_barcode(barcode)
@@ -27,6 +30,7 @@ class storageController():
         # Usando o índice correto para o insert
         parent.product_name_entry.delete("1.0", "end")  # Limpa o campo antes de inserir
         parent.product_name_entry.insert("1.0", product_name)  # Insere o nome do produto
+        self.mController.rewrite_entry(parent.product_price_entry, price_text)
 
         parent.product_price_entry.focus_set()
 
@@ -35,6 +39,14 @@ class storageController():
         self.get_searched_storage(parent)
 
     def storage_treeview_bind_doubleclick(self, parent, event=None):
+
+        treeview = event.widget
+        item = treeview.identify("item", event.x, event.y)
+
+        if not item:
+            print("❗Nenhum item clicado!")
+            return
+
         self.clear_entries(parent)
         parent.product_price_entry.delete(0, tk.END)
         parent.storage_treeview.selection()

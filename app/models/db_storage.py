@@ -63,6 +63,7 @@ class DBProducts():
     def add_product(self, barcode, product_name, price):
         # Adiciona um novo produto ao estoque
         try:
+            self.db.connect()
             self.db.cursor.execute("""
                 INSERT INTO tb_storage (barcode, product_name, price)
                 VALUES (?, ?, ?)

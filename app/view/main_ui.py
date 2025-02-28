@@ -2,8 +2,8 @@ from controller.main_controller import mainController
 import tkinter as tk
 from tkinter import ttk
 from utils.styles import *
-from ui.home_ui import home_screen
-from ui.sells_ui import sales_screen
+from view.home_ui import home_screen
+from view.sells_ui import sales_screen
 
 class Application:
     def __init__(self):

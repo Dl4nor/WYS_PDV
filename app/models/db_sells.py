@@ -72,4 +72,4 @@ class DBSells():
             # Criar diretório se não existir
             os.makedirs(output_dir, exist_ok=True)
             
-            self.expxlsx.export_sales_to_excel(date.today(), output_file)
+            self.expxlsx.export_sale_to_excel(date.today(), output_file)

@@ -3,8 +3,8 @@ import tkinter as tk
 from tkinter import ttk
 from utils.styles import *
 from utils.gnr_components import gnrComponents
-from ui.sells_ui import sales_screen
-from ui.storage_ui import storage_screen
+from view.sells_ui import sales_screen
+from view.storage_ui import storage_screen
 
 # Classe principal para gerar uma janela
 class home_screen(ttk.Frame):

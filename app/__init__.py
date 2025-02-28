@@ -1,1 +1,1 @@
-from ui.main_ui import *
+from view.main_ui import *

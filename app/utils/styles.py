@@ -203,26 +203,25 @@ class MonetaryEntry(ctk.CTkEntry):
         if event.char.isdigit() or event.keysym in ('BackSpace', 'Delete'):
             # Pega o texto atual removendo formatação
             current = self.get().replace('R$ ', '').replace('.', '').replace(',', '').replace(' ', '')
-            
-            # Remove zeros à esquerda
-            if current:
-                current = str(int(current))
-            
-            # Converte para centavos
-            if current:
-                value = int(current)
+
+            # Se o campo estiver completamente vazio, define 0
+            if not current.strip():
+                self._value = 0
             else:
-                value = 0
+                # Remove zeros à esquerda e converte para inteiro
+                try:
+                    current = str(int(current))  # Garante que current é um número válido
+                    self._value = int(current)
+                except ValueError:
+                    self._value = 0  # Se der erro, assume 0
                 
-            # Atualiza valor interno
-            self._value = value
-            
-            # Formata e exibe
+            # Atualiza o display
             self._update_display()
-            
+
         # Impede caracteres não numéricos
         return False
-    
+
+
     def _update_display(self):
         # Converte centavos para reais
         reais = self._value / 100 if self._value else 0
@@ -239,9 +238,10 @@ class MonetaryEntry(ctk.CTkEntry):
         self.select_range(0, 'end')
     
     def _on_focus_out(self, event):
-        # Garante formatação correta ao perder foco
-        self._update_display()
-    
+        # Se o usuário saiu sem modificar, não muda nada
+        if self.get().strip() == "":
+            self._update_display()
+ 
     def get_value(self):
         # Retorna o valor em centavos
         return self._value
