@@ -2,7 +2,9 @@ import os
 from datetime import datetime, date
 import pytz
 import sqlite3
+from utils.detect_files import detectFiles
 from services.Export_to_xlsx import exportToXlsx
+from services.Pagbank_API import Pagbank_API
 from controller.sells_controller import sellsController
 from app.models.db_controller import DBController
 
@@ -11,6 +13,8 @@ class DBSells():
         self.db = DBController()
         self.sController = sellsController()
         self.expxlsx = exportToXlsx()
+        self.pagbank = Pagbank_API()
+        self.files = detectFiles()
         
     def add_sell(self, parent):
         # Adiciona uma nova venda efetuada
@@ -33,9 +37,12 @@ class DBSells():
         except sqlite3.Error as e:
             print(f"❌ Erro: Venda não cadastrada - {e}")
         finally:
-
             output_dir = f"Fechamentos/{date.today().month} - {date.today().year}/"
             output_file = os.path.join(output_dir, f"Vendas - {date.today()}.xlsx")
+
+            self.files.wait_and_close_file(output_file)
+
+            self.pagbank.post_create_order()
 
             # Criar diretório se não existir
             os.makedirs(output_dir, exist_ok=True)
