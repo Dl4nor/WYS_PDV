@@ -4,7 +4,7 @@ import pytz
 import sqlite3
 from utils.detect_files import detectFiles
 from services.Export_to_xlsx import exportToXlsx
-from services.Pagbank_API import Pagbank_API
+from services.Pagbank_API import Pagbank_order_API
 from controller.sells_controller import sellsController
 from app.models.db_controller import DBController
 
@@ -13,7 +13,7 @@ class DBSells():
         self.db = DBController()
         self.sController = sellsController()
         self.expxlsx = exportToXlsx()
-        self.pagbank = Pagbank_API()
+        self.pagbank = Pagbank_order_API()
         self.files = detectFiles()
         
     def add_sell(self, parent):

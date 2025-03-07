@@ -1,11 +1,13 @@
 import requests
 from datetime import date
+import webbrowser
 from models.db_controller import DBController
 
-class Pagbank_API():
+token = "cd49f263-8563-4cd6-ad24-ba9206f009946a1d16ac48d5a49654e8073c6608548f74b5-1d62-4e84-a840-3baf49ab691b"
+
+class Pagbank_order_API():
     def __init__(self):
         self.db = DBController()
-        self.token = "cd49f263-8563-4cd6-ad24-ba9206f009946a1d16ac48d5a49654e8073c6608548f74b5-1d62-4e84-a840-3baf49ab691b"
 
     def generate_pagbank_order_data(self):
         # Converte os itens da venda para o formato de dicionário
@@ -55,7 +57,7 @@ class Pagbank_API():
 
         headers = {
             "accept": "*/*",
-            "Authorization": f"Bearer {self.token}",  # Token de autenticação
+            "Authorization": f"Bearer {token}",  # Token de autenticação
             "content-type": "application/json"
         }
 
@@ -85,7 +87,7 @@ class Pagbank_API():
         self.db.connect()
         
         self.db.cursor.execute("""
-            SELECT si.sell_id, s.barcode, s.product_name, si.quantity, si.total_price
+            SELECT si.sell_id, s.barcode, s.product_name, SUM(si.quantity), SUM(si.total_price)
             FROM tb_storage s
             JOIN tb_selled_items si ON(si.product_id = s.id)
             WHERE si.sell_id = (
@@ -95,6 +97,7 @@ class Pagbank_API():
                 ORDER BY sell_date DESC
                 LIMIT 1
             )
+            GROUP BY si.sell_id, s.barcode, s.product_name
             ORDER BY s.product_name ASC
         """, (date.today(), ))
 
@@ -103,3 +106,39 @@ class Pagbank_API():
 
         return items
 
+class Pagbank_account_API():
+    def __init__(self):
+        # response = self.post_create_application()
+
+        self.AUTH_URL = "https://acesso.pagseguro.uol.com.br/oauth2/authorize"
+        self.CLIENT_ID = "b450588a-9add-43d3-a7ed-8a7432ab7bd6"
+        self.REDIRECT_URI = "http://localhost:8000/callback"
+        # self.CLIENT_ID = response.get("client_id")
+        # self.CLIENT_SECRET = response.get("client_secret")
+        # self.REDIRECT_URI = response.get("redirect_uri")
+
+    def post_create_application(self):
+        # Cria uma aplicação, para poder utilizar dados do usuário Pagbank
+
+        url = "https://sandbox.api.pagseguro.com/oauth2/application"
+
+        payload = {
+            "name": "WYS",
+            "site": "http://localhost:8000",
+            "redirect_uri": "http://localhost:8000/callback",
+            "description": "Descrição da aplicação"
+        }
+        headers = {
+            "accept": "*/*",
+            "Authorization": token,
+            "content-type": "application/json"
+        }
+
+        response = requests.post(url, json=payload, headers=headers)
+
+        print(response.text)
+
+        return response.json()
+
+
+    
