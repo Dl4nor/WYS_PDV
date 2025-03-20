@@ -1,4 +1,5 @@
 import os
+from waitress import serve
 from flask import Flask, request, redirect
 
 app = Flask(__name__)
@@ -18,4 +19,4 @@ def callback():
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))  # Heroku define a PORT automaticamente
-    app.run(host='0.0.0.0', port=port)
+    serve(app, host='0.0.0.0', port=port)
