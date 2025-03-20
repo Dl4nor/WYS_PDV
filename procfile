@@ -1,2 +1,2 @@
-web: gunicorn app.auth_server:app
+web: gunicorn auth_server:app
 
