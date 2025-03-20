@@ -112,7 +112,7 @@ class Pagbank_account_API():
 
         self.AUTH_URL = "https://acesso.pagseguro.uol.com.br/oauth2/authorize"
         self.CLIENT_ID = "b450588a-9add-43d3-a7ed-8a7432ab7bd6"
-        self.REDIRECT_URI = "http://localhost:8000/callback"
+        self.REDIRECT_URI = "https://wys-server-ca786309ebb8.herokuapp.com/oauth2/callback"
         # self.CLIENT_ID = response.get("client_id")
         # self.CLIENT_SECRET = response.get("client_secret")
         # self.REDIRECT_URI = response.get("redirect_uri")
@@ -124,8 +124,8 @@ class Pagbank_account_API():
 
         payload = {
             "name": "WYS",
-            "site": "http://localhost:8000",
-            "redirect_uri": "http://localhost:8000/callback",
+            "site": "https://wys-server-ca786309ebb8.herokuapp.com",
+            "redirect_uri": "https://wys-server-ca786309ebb8.herokuapp.com/callback",
             "description": "Descrição da aplicação"
         }
         headers = {
