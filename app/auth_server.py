@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, redirect
 
 app = Flask(__name__)
@@ -16,4 +17,5 @@ def callback():
     return 'Erro: Código de autorização não encontrado!'
 
 if __name__ == '__main__':
-    app.run(port=8000)
+    port = int(os.environ.get('PORT', 5000))  # Heroku define a PORT automaticamente
+    app.run(host='0.0.0.0', port=port)
