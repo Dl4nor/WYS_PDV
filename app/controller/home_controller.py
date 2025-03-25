@@ -1,5 +1,5 @@
+from ..services.Pagbank_API import Pagbank_account_API
 import webbrowser
-from services.Pagbank_API import Pagbank_account_API
 
 class homeController():
     def __init__(self):
@@ -9,6 +9,6 @@ class homeController():
         # Abrir login no site da pagbank para
         # Autorização do app
 
-        auth_link = f"{self.pbaAPI.AUTH_URL}?response_type=code&client_id={self.pbaAPI.CLIENT_ID}&redirect_uri={self.pbaAPI.REDIRECT_URI}&scope=payments"
+        auth_link = self.pbaAPI.get_auth_link_to_oauth2()
 
         webbrowser.open(auth_link)

@@ -1,7 +1,7 @@
+from ..models.db_controller import DBController
 import requests
 from datetime import date
 import webbrowser
-from models.db_controller import DBController
 
 token = "cd49f263-8563-4cd6-ad24-ba9206f009946a1d16ac48d5a49654e8073c6608548f74b5-1d62-4e84-a840-3baf49ab691b"
 
@@ -110,13 +110,21 @@ class Pagbank_account_API():
     def __init__(self):
         # response = self.post_create_application()
 
-        self.AUTH_URL = "https://acesso.pagseguro.uol.com.br/oauth2/authorize"
-        self.CLIENT_ID = "b450588a-9add-43d3-a7ed-8a7432ab7bd6"
-        self.REDIRECT_URI = "https://wys-server-ca786309ebb8.herokuapp.com/oauth2/callback"
+        self.AUTH_URL = "https://connect.sandbox.pagseguro.uol.com.br/oauth2/authorize"
+        self.CLIENT_ID = "0962d187-8758-42e6-b6df-2d82d31cfb77"
+        self.REDIRECT_URI = "redirect_uri=https://wys-webserver.netlify.app/callback"
+        self.CLIENT_SECRET = "0e639639-7eef-42cb-bceb-03f72a434558"
+        self.SCOPE = "payments.read"
+
         # self.CLIENT_ID = response.get("client_id")
-        # self.CLIENT_SECRET = response.get("client_secret")
         # self.REDIRECT_URI = response.get("redirect_uri")
 
+    def get_auth_link_to_oauth2(self):
+
+        auth_link = f"{self.AUTH_URL}?response_type=code&client_id={self.CLIENT_ID}&redirect_uri={self.REDIRECT_URI}&scope={self.SCOPE}"
+
+        return auth_link
+    
     def post_create_application(self):
         # Cria uma aplicação, para poder utilizar dados do usuário Pagbank
 
@@ -139,6 +147,8 @@ class Pagbank_account_API():
         print(response.text)
 
         return response.json()
+
+
 
 
     

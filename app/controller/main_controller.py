@@ -1,7 +1,7 @@
+from ..utils.styles import *
 import os
 import tkinter as tk
 import pytz
-from utils.styles import *
 from ctypes import windll, byref, c_int
 
 class mainController():

@@ -1,11 +1,10 @@
-
+from ..controller.home_controller import homeController
+from ..utils.styles import *
+from ..utils.gnr_components import gnrComponents
+from ..view.sells_ui import sales_screen
+from ..view.storage_ui import storage_screen
 import tkinter as tk
 from tkinter import ttk
-from controller.home_controller import homeController
-from utils.styles import *
-from utils.gnr_components import gnrComponents
-from view.sells_ui import sales_screen
-from view.storage_ui import storage_screen
 
 # Classe principal para gerar uma janela
 class home_screen(ttk.Frame):

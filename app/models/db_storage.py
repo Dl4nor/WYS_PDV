@@ -1,6 +1,6 @@
+from ..models.db_controller import DBController
 import os
 import sqlite3
-from app.models.db_controller import DBController
 
 class DBProducts(): 
 

@@ -1,13 +1,10 @@
+from ..models.db_controller import DBController
+from ..utils.styles import Colors
 import os
 import openpyxl
-
 from openpyxl.styles import Font, Border
 from openpyxl.styles import PatternFill, Alignment, Side
-
 from datetime import datetime
-
-from models.db_controller import DBController
-from utils.styles import Colors
 
 class exportToXlsx():
     def __init__(self):

@@ -1,8 +1,8 @@
+from ..models.db_storage import DBProducts
+from ..utils.styles import MonetaryEntry
+from ..controller.main_controller import mainController
+from ..services.OFoodF_API import OpenFoodFacts_API
 import tkinter as tk
-from models.db_storage import DBProducts
-from utils.styles import MonetaryEntry
-from controller.main_controller import mainController
-from services.OFoodF_API import OpenFoodFacts_API
 
 class storageController():
     def __init__(self):

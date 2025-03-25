@@ -1,6 +1,6 @@
+from ..models.db_storage import DBProducts
+from ..controller.main_controller import mainController
 import tkinter as tk
-from models.db_storage import DBProducts
-from controller.main_controller import mainController
 
 class sellsController():
     def __init__(self):
