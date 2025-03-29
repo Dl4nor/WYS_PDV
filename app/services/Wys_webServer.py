@@ -18,7 +18,7 @@ class WYS_WebServer_API():
                 with winreg.CreateKey(key, r"shell\open\command") as cmd_key:
                     winreg.SetValue(cmd_key, "", winreg.REG_SZ, f'"{app_path}" "%1"')
             
-            print("Protocolo registrado com sucesso!")
+            # print("Protocolo registrado com sucesso!")
         except Exception as e:
             print(f"Erro ao registrar protocolo: {e}")
 
@@ -30,7 +30,7 @@ class WYS_WebServer_API():
             if arg.startswith("meupdv://auth?code="):
                 # Extrair o código de autorização
                 code = arg.replace("meupdv://auth?code=", "")
-                print(f"Código de autorização recebido: {code}")
+                # print(f"Código de autorização recebido: {code}")
                 # Aqui você usaria o código no seu aplicativo
                 return code
         return None

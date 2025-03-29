@@ -1,7 +1,7 @@
 [Setup]
 AppName=WYS PDV
 AppVersion=1.0
-DefaultDirName={pf}\WYS PDV
+DefaultDirName={commonpf}\WYS PDV
 DefaultGroupName=WYS PDV
 OutputDir=.\install
 OutputBaseFilename=WYS_PDV_Setup
@@ -17,12 +17,14 @@ Name: "brazilianportuguese"; MessagesFile: "compiler:Languages\BrazilianPortugue
 Name: desktopicon; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "build\exe.win-amd64-3.12\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "dist\register_deep_link.exe"; DestDir: "{app}\register_deep_link\"; Flags: ignoreversion
+Source: "dist\WYS_PDV.exe"; DestDir: "{app}\dist\"; DestName: "WYS_PDV.exe"; Flags: ignoreversion
+Source: "dist\register_deep_link.exe"; DestDir: "{app}\dist\"; Flags: ignoreversion
+Source: "build\main\*"; DestDir: "{app}\build\main\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "app\assets\*"; DestDir: "{app}\assets\"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{group}\WYS PDV"; Filename: "{app}\WYS PDV.exe"; IconFilename: "{app}\assets\icons\wys_real.ico"
-Name: "{commondesktop}\WYS PDV"; Filename: "{app}\WYS PDV.exe"; Tasks: desktopicon; IconFilename: "{app}\assets\icons\wys_real.ico"
+Name: "{group}\WYS PDV"; Filename: "{app}\dist\WYS_PDV.exe"; IconFilename: "{app}\assets\icons\wys_real.ico"
+Name: "{commondesktop}\WYS PDV"; Filename: "{app}\dist\WYS_PDV.exe"; Tasks: desktopicon; IconFilename: "{app}\assets\icons\wys_real.ico"
 
 [Run]
-Filename: "{app}\register_deep_link\register_deep_link.exe"; Parameters: "{app}"; Description: "Registrando Deep Link"; Flags: runhidden
+Filename: "{app}\dist\register_deep_link.exe"; Parameters: """{app}"""; Description: "Registrando Deep Link"; Flags: runhidden

@@ -20,14 +20,14 @@ class DBSells():
         # Adiciona uma nova venda efetuada
 
         if not parent.sellList_treeview.get_children():
-            print("⚠️ Nenhum item na venda!")
+            # print("⚠️ Nenhum item na venda!")
             return
         
         try:
             # Registra uma nova venda e recupera seu id
             sell_id = self.get_id_from_new_sell()
             self.insert_selled_items_to_db(parent, sell_id)
-            print(f"✅ Nova venda registrada com sucesso! ID: {sell_id}")
+            # print(f"✅ Nova venda registrada com sucesso! ID: {sell_id}")
 
             parent.sellList_treeview.delete(*parent.sellList_treeview.get_children())
         
@@ -35,7 +35,7 @@ class DBSells():
             self.sController.total_calculate(parent)
 
         except sqlite3.Error as e:
-            print(f"❌ Erro: Venda não cadastrada - {e}")
+            print(f"(X) Erro: Venda não cadastrada - {e}")
         finally:
             output_dir = f"Fechamentos/{date.today().month} - {date.today().year}/"
             output_file = os.path.join(output_dir, f"Vendas - {date.today()}.xlsx")
@@ -83,7 +83,7 @@ class DBSells():
                     VALUES (?, ?, ?, ?)
                 """, (sell_id, product_id, int(quantity), float(total_price)))
             else:
-                print(f"⚠️ Produto com código {barcode} não encontrado no banco de dados!")
+                print(f"<!> Produto com código {barcode} não encontrado no banco de dados!")
         
         self.db.commit()
         self.db.disconnect()

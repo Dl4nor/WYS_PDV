@@ -101,7 +101,7 @@ class sellsController():
             self.mController.rewrite_entry(parent.subtotal_entry, subtotal_text, True)
             self.mController.rewrite_entry(parent.product_name_entry, product_name, True)
         else:
-            print("⚠️ Produto não encontrado!")
+            print("<!> Produto não encontrado!")
 
     def total_calculate(self, parent):
         total_price = 0

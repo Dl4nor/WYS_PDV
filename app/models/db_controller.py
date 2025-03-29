@@ -5,7 +5,8 @@ class DBController():
 
     def __init__(self, db_name="bd_wyspdv.sqlite"):
         # Inicializa o db_controller
-        self.db_name = db_name
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        self.db_name = os.path.join(base_dir, db_name)
         self.conn = None
         self.cursor = None
 
@@ -16,14 +17,14 @@ class DBController():
         self.conn.row_factory = sqlite3.Row
         self.cursor = self.conn.cursor()
         self.cursor.execute("PRAGMA foreign_keys = ON")
-        self.cursor = self.conn.cursor(); print("✅ Conectando ao banco...")
+        self.cursor = self.conn.cursor(); # print("✅ Conectando ao banco...")
 
     def disconnect(self):
         if self.conn:
             self.conn.close()
             self.conn = None
             self.cursor = None
-            print("🔴 Desconectando do banco...")
+            # print("🔴 Desconectando do banco...")
 
     def commit(self):
         if self.conn:
@@ -62,10 +63,10 @@ class DBController():
                 )
             """)
             self.commit()
-            print("✅ Tabelas verificadas/criadas com sucesso")
+            # print("✅ Tabelas verificadas/criadas com sucesso")
         
         except sqlite3.Error as e:
-            print(f"⚠️ Erro ao criar tabelas: {e}")
+            print(f"<!> Erro ao criar tabelas: {e}")
         
         finally:
             self.disconnect()

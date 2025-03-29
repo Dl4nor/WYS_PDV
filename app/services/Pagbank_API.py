@@ -29,7 +29,7 @@ class Pagbank_order_API():
         items = self.get_last_selled_items()
 
         if not items:
-            print("⚠️ Nenhuma venda encontrada para gerar o pedido!")
+            # print("⚠️ Nenhuma venda encontrada para gerar o pedido!")
             return None
 
         sell_id = items[0][0]
@@ -69,16 +69,16 @@ class Pagbank_order_API():
             response_data = response.json()
 
             if response.status_code == 201:
-                print("✅ Pedido criado com sucesso!")
-                print(response_data)
+                # print("✅ Pedido criado com sucesso!")
+                # print(response_data)
                 return response_data  # Retorna os dados do pedido, incluindo ID e links
 
             else:
-                print(f"❌ Erro ao criar pedido: {response_data}")
+                # print(f"❌ Erro ao criar pedido: {response_data}")
                 return None
 
         except requests.RequestException as e:
-            print(f"❌ Erro na requisição: {e}")
+            # print(f"❌ Erro na requisição: {e}")
             return None
 
     def get_last_selled_items(self):
@@ -144,7 +144,7 @@ class Pagbank_account_API():
 
         response = requests.post(url, json=payload, headers=headers)
 
-        print(response.text)
+        # print(response.text)
 
         return response.json()
 

@@ -44,7 +44,7 @@ class storageController():
         item = treeview.identify("item", event.x, event.y)
 
         if not item:
-            print("❗Nenhum item clicado!")
+            # print("❗Nenhum item clicado!")
             return
 
         self.clear_entries(parent)
@@ -68,7 +68,7 @@ class storageController():
         try:
             price = float(price_text)
         except ValueError:
-            print("⚠️ Erro: O preço não é um número válido.")
+            # print("⚠️ Erro: O preço não é um número válido.")
             return None
         
         return {
@@ -87,14 +87,14 @@ class storageController():
         product = self.dbP.get_product_by_barcode(product_info["barcode"])
         if product:
             self.dbP.update_product(product_info)
-            print(f"✅ O produto '{product_info['product_name']}' foi atualizado com sucesso!")
+            # print(f"✅ O produto '{product_info['product_name']}' foi atualizado com sucesso!")
         else:
             self.dbP.add_product(
                 product_info["barcode"],
                 product_info["product_name"],
                 product_info["price"]
             )
-            print(f"✅ O produto '{product_info['product_name']}' foi adicionado com sucesso!")
+            # print(f"✅ O produto '{product_info['product_name']}' foi adicionado com sucesso!")
 
         self.clear_entries(parent)
         self.get_storage_to_treeview(parent)

@@ -24,6 +24,7 @@ def add_deep_link(protocol, install_dir):
         winreg.CloseKey(command_key)
         
         print(f"Deep link {protocol} registrado com sucesso!")
+        print(f"Caminho do DeepLink: {install_dir}\\WYS PDV.exe")
     except Exception as e:
         print(f"Erro ao registrar deep link: {e}")
 
@@ -31,4 +32,5 @@ if __name__ == "__main__":
     # O caminho de instalação do programa será passado como argumento
     if len(sys.argv) > 1:
         install_dir = sys.argv[1]  # O diretório de instalação
+        install_dir = install_dir.strip('"')
         add_deep_link("wyspdv", install_dir)

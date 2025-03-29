@@ -19,7 +19,7 @@ class exportToXlsx():
         sale = self.get_sale_from_db(date)
         
         if not sale:
-            print(f"Nenhuma venda encontrada para a data {date}.")
+            # print(f"Nenhuma venda encontrada para a data {date}.")
             self.db.disconnect()
             return
         
@@ -36,7 +36,7 @@ class exportToXlsx():
 
         # Salvar o arquivo
         workbook.save(output_file)
-        print(f"Arquivo salvo como {output_file}")
+        # print(f"Arquivo salvo como {output_file}")
 
     def make_sheet_title(self, sell_date):
         # Converter string para datetime
