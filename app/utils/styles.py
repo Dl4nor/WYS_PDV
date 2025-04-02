@@ -264,5 +264,5 @@ class MonetaryEntry(ctk.CTkEntry):
         try:
             return float(price_text)
         except ValueError:
-            # print("⚠️ Erro: O preço informado não é válido.")
+            print("<!> Erro: O preço informado não é válido.")
             return None  # Ou retornar 0.0 dependendo do caso
