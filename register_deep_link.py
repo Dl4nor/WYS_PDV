@@ -18,7 +18,7 @@ def add_deep_link(protocol, install_dir):
         command_key = winreg.CreateKey(winreg.HKEY_CURRENT_USER, 
                                     fr"SOFTWARE\Classes\{protocol}\shell\open\command")
         winreg.SetValueEx(command_key, "", 0, winreg.REG_SZ, 
-                        f'"{install_dir}\\WYS PDV.exe" "%1"')
+                        f'"{install_dir}\\dist\\WYS PDV.exe" "%1"')
         
         winreg.CloseKey(key)
         winreg.CloseKey(command_key)

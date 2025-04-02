@@ -8,6 +8,7 @@ OutputBaseFilename=WYS_PDV_Setup
 SetupIconFile=app\assets\icons\wys_real.ico
 Compression=lzma
 SolidCompression=yes
+PrivilegesRequired=admin
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -28,3 +29,10 @@ Name: "{commondesktop}\WYS PDV"; Filename: "{app}\dist\WYS_PDV.exe"; Tasks: desk
 
 [Run]
 Filename: "{app}\dist\register_deep_link.exe"; Parameters: """{app}"""; Description: "Registrando Deep Link"; Flags: runhidden
+
+[UninstallDelete]
+Type: filesandordirs; Name: "{localappdata}\WYS_PDV"
+
+[Registry]
+Root: HKCU; Subkey: "SOFTWARE\Classes\wyspdv"; Flags: uninsdeletekey
+

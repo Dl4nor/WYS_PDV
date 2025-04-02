@@ -20,14 +20,14 @@ class DBSells():
         # Adiciona uma nova venda efetuada
 
         if not parent.sellList_treeview.get_children():
-            # print("⚠️ Nenhum item na venda!")
+            print("<!> Nenhum item na venda!")
             return
         
         try:
             # Registra uma nova venda e recupera seu id
             sell_id = self.get_id_from_new_sell()
             self.insert_selled_items_to_db(parent, sell_id)
-            # print(f"✅ Nova venda registrada com sucesso! ID: {sell_id}")
+            print(f"[✔] Nova venda registrada com sucesso! ID: {sell_id}")
 
             parent.sellList_treeview.delete(*parent.sellList_treeview.get_children())
         
