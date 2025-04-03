@@ -68,7 +68,7 @@ class DBProducts():
                 INSERT INTO tb_storage (barcode, product_name, price)
                 VALUES (?, ?, ?)
             """, (barcode, product_name, price))
-            print(f"[✔] Produto '{product_name}' cadastrado com sucesso!")
+            print(f"[OK] Produto '{product_name}' cadastrado com sucesso!")
 
             self.db.commit()
             
@@ -120,7 +120,7 @@ class DBProducts():
                 WHERE barcode = ?
             """, (new_name, new_price, barcode))
             self.db.commit()
-            print(f"[✔] Produto '{new_name}' atualizado com sucesso!")
+            print(f"[OK] Produto '{new_name}' atualizado com sucesso!")
 
         except sqlite3.Error as e:
             print(f"<!> Erro ao atualizar o produto: {e}")

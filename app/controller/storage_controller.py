@@ -87,14 +87,14 @@ class storageController():
         product = self.dbP.get_product_by_barcode(product_info["barcode"])
         if product:
             self.dbP.update_product(product_info)
-            print(f"[✔] O produto '{product_info['product_name']}' foi atualizado com sucesso!")
+            print(f"[OK] O produto '{product_info['product_name']}' foi atualizado com sucesso!")
         else:
             self.dbP.add_product(
                 product_info["barcode"],
                 product_info["product_name"],
                 product_info["price"]
             )
-            print(f"[✔] O produto '{product_info['product_name']}' foi adicionado com sucesso!")
+            print(f"[OK] O produto '{product_info['product_name']}' foi adicionado com sucesso!")
 
         self.clear_entries(parent)
         self.get_storage_to_treeview(parent)

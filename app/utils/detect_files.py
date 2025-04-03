@@ -15,7 +15,7 @@ class detectFiles():
         # Encerra todos os processos do Excel
         for process in psutil.process_iter(attrs=["pid", "name"]):
             if "excel" in process.info["name"].lower():
-                print(f"◯ Fechando Excel (PID: {process.info['pid']})...")
+                print(f"[O] Fechando Excel (PID: {process.info['pid']})...")
                 process.kill()
 
     def wait_and_close_file(self, file_path):
@@ -24,7 +24,7 @@ class detectFiles():
             print("<!> O arquivo está aberto! Fechando o Excel...")
             self.close_excel()
         else:
-            print("[✔] O arquivo está disponível para edição.")
+            print("[OK] O arquivo está disponível para edição.")
     
 
 

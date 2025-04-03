@@ -32,6 +32,7 @@ Filename: "{app}\dist\register_deep_link.exe"; Parameters: """{app}"""; Descript
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{localappdata}\WYS_PDV"
+Type: filesandordirs; Name: "{app}"
 
 [Registry]
 Root: HKCU; Subkey: "SOFTWARE\Classes\wyspdv"; Flags: uninsdeletekey

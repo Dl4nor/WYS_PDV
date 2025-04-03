@@ -25,14 +25,14 @@ class DBController():
         self.conn.row_factory = sqlite3.Row
         self.cursor = self.conn.cursor()
         self.cursor.execute("PRAGMA foreign_keys = ON")
-        self.cursor = self.conn.cursor(); print("[✔] Conectando ao banco...")
+        self.cursor = self.conn.cursor(); print("[OK] Conectando ao banco...")
 
     def disconnect(self):
         if self.conn:
             self.conn.close()
             self.conn = None
             self.cursor = None
-            print("◯ Desconectando do banco...")
+            print("[O] Desconectando do banco...")
 
     def commit(self):
         if self.conn:
@@ -71,7 +71,7 @@ class DBController():
                 )
             """)
             self.commit()
-            print("[✔] Tabelas verificadas/criadas com sucesso")
+            print("[OK] Tabelas verificadas/criadas com sucesso")
         
         except sqlite3.Error as e:
             print(f"<!> Erro ao criar tabelas: {e}")

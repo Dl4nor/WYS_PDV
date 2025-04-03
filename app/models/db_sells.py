@@ -27,7 +27,7 @@ class DBSells():
             # Registra uma nova venda e recupera seu id
             sell_id = self.get_id_from_new_sell()
             self.insert_selled_items_to_db(parent, sell_id)
-            print(f"[✔] Nova venda registrada com sucesso! ID: {sell_id}")
+            print(f"[OK] Nova venda registrada com sucesso! ID: {sell_id}")
 
             parent.sellList_treeview.delete(*parent.sellList_treeview.get_children())
         

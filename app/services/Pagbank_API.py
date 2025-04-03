@@ -3,7 +3,7 @@ import requests
 from datetime import date
 import webbrowser
 
-token = "cd49f263-8563-4cd6-ad24-ba9206f009946a1d16ac48d5a49654e8073c6608548f74b5-1d62-4e84-a840-3baf49ab691b"
+myToken = "cd49f263-8563-4cd6-ad24-ba9206f009946a1d16ac48d5a49654e8073c6608548f74b5-1d62-4e84-a840-3baf49ab691b"
 
 class Pagbank_order_API():
     def __init__(self):
@@ -57,7 +57,7 @@ class Pagbank_order_API():
 
         headers = {
             "accept": "*/*",
-            "Authorization": f"Bearer {token}",  # Token de autenticação
+            "Authorization": f"Bearer {myToken}",  # Token de autenticação
             "content-type": "application/json"
         }
 
@@ -69,7 +69,7 @@ class Pagbank_order_API():
             response_data = response.json()
 
             if response.status_code == 201:
-                print("[✔] Pedido criado com sucesso!")
+                print("[OK] Pedido criado com sucesso!")
                 print(response_data)
                 return response_data  # Retorna os dados do pedido, incluindo ID e links
 
@@ -112,7 +112,7 @@ class Pagbank_account_API():
 
         self.AUTH_URL = "https://connect.sandbox.pagseguro.uol.com.br/oauth2/authorize"
         self.CLIENT_ID = "0962d187-8758-42e6-b6df-2d82d31cfb77"
-        self.REDIRECT_URI = "redirect_uri=https://wys-webserver.netlify.app/callback"
+        self.REDIRECT_URI = "https://wys-webserver.netlify.app/callback"
         self.CLIENT_SECRET = "0e639639-7eef-42cb-bceb-03f72a434558"
         self.SCOPE = "payments.read"
 
@@ -125,6 +125,7 @@ class Pagbank_account_API():
 
         return auth_link
     
+    """
     def post_create_application(self):
         # Cria uma aplicação, para poder utilizar dados do usuário Pagbank
 
@@ -132,13 +133,13 @@ class Pagbank_account_API():
 
         payload = {
             "name": "WYS",
-            "site": "https://wys-server-ca786309ebb8.herokuapp.com",
-            "redirect_uri": "https://wys-server-ca786309ebb8.herokuapp.com/callback",
+            "site": "https://wys-webserver.netlify.app",
+            "redirect_uri": "https://wys-webserver.netlify.app/callback",
             "description": "Descrição da aplicação"
         }
         headers = {
             "accept": "*/*",
-            "Authorization": token,
+            "Authorization": myToken,
             "content-type": "application/json"
         }
 
@@ -147,8 +148,8 @@ class Pagbank_account_API():
         print(response.text)
 
         return response.json()
-
-
+    """
+    
 
 
     
