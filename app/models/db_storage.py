@@ -1,5 +1,4 @@
 from ..models.db_controller import DBController
-import os
 import sqlite3
 
 class DBProducts(): 

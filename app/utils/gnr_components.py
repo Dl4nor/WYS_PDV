@@ -1,7 +1,4 @@
-from ..controller.main_controller import mainController
-import tkinter
 from tkinter import ttk
-import customtkinter as ctk
 
 class gnrComponents():
 

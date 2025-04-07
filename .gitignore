@@ -3,4 +3,5 @@
 *build
 bd_wyspdv.sqlite
 *.xlsx
+*.spec
 Fechamentos/

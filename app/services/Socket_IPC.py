@@ -1,10 +1,13 @@
+'''
 import socket
 import threading
 import sys
 from urllib.parse import urlparse, parse_qs
+from ..services.Pagbank_API import Pagbank_account_API
 
 class IPCSocket:
     def __init__(self):
+        self.pbank_a = Pagbank_account_API()
         self.host = "127.0.0.1"
         self.port = 65432
         self.server_socket = None
@@ -22,6 +25,12 @@ class IPCSocket:
 
     def handle_client(self, client_socket):
         """Recebe dados do cliente e processa o código"""
+        
+        self.code = self.handle_auth_code(client_socket)
+
+        print(f"[OK] Código extraído: {self.code}")
+
+    def handle_auth_code(self, client_socket):
         try:
             data = client_socket.recv(1024).decode()
             print(f"[OK] Codigo de autenticacao recebido: {data}")
@@ -34,9 +43,10 @@ class IPCSocket:
 
             code = params.get("code", [""])[0]  # Pega o valor do parâmetro "code"
 
-            self.auth_code = code
+            if code:
+                self.pbank_a.get_access_token(code)
 
-            print(f"[OK] Código extraído: {code}")
+            return code
 
     def start_server(self):
         """Cria e inicia o servidor para aceitar conexões"""
@@ -71,3 +81,5 @@ class IPCSocket:
 if __name__ == "__main__":
     ipc = IPCSocket()
     ipc.run()
+
+'''

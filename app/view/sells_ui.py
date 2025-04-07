@@ -3,8 +3,6 @@ from ..utils.gnr_components import gnrComponents
 from ..utils.styles import *
 from ..models.db_sells import DBSells
 from ..models.db_storage import DBProducts
-import os
-import tkinter as tk
 from tkinter import ttk
 import customtkinter as ctk
 

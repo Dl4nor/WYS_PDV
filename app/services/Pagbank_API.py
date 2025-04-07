@@ -1,3 +1,4 @@
+'''
 from ..models.db_controller import DBController
 import requests
 from datetime import date
@@ -116,14 +117,31 @@ class Pagbank_account_API():
         self.CLIENT_SECRET = "0e639639-7eef-42cb-bceb-03f72a434558"
         self.SCOPE = "payments.read"
 
-        # self.CLIENT_ID = response.get("client_id")
-        # self.REDIRECT_URI = response.get("redirect_uri")
-
     def get_auth_link_to_oauth2(self):
 
         auth_link = f"{self.AUTH_URL}?response_type=code&client_id={self.CLIENT_ID}&redirect_uri={self.REDIRECT_URI}&scope={self.SCOPE}"
 
         return auth_link
+    
+    def get_access_token(self, code):
+        url = "https://sandbox.api.pagseguro.com/oauth2/token"
+
+        payload = {
+            "grant_type": "authorization_code",
+            "redirect_uri": self.REDIRECT_URI,
+            "code": code
+        }
+        headers = {
+            "accept": "*/*",
+            "Authorization": f"Bearer {myToken}",
+            "X_CLIENT_ID": self.CLIENT_ID,
+            "X_CLIENT_SECRET": self.CLIENT_SECRET,
+            "content-type": "application/json"
+        }
+
+        response = requests.post(url, json=payload, headers=headers)
+
+        print(response.text)
     
     """
     def post_create_application(self):
@@ -150,6 +168,4 @@ class Pagbank_account_API():
         return response.json()
     """
     
-
-
-    
+'''

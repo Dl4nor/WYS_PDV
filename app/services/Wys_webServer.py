@@ -1,3 +1,4 @@
+'''
 import winreg
 import sys
 import os
@@ -34,3 +35,4 @@ class WYS_WebServer_API():
                 # Aqui você usaria o código no seu aplicativo
                 return code
         return None
+'''

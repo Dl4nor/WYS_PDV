@@ -2,8 +2,6 @@ from ..controller.storage_controller import storageController
 from ..utils.styles import *
 from ..utils.gnr_components import gnrComponents
 from ..models.db_storage import DBProducts
-import os
-import tkinter as tk
 from tkinter import ttk
 import customtkinter as ctk
 

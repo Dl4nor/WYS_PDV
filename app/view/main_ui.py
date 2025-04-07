@@ -1,7 +1,6 @@
 from ..controller.main_controller import mainController
 from ..utils.styles import *
 from ..view.home_ui import home_screen
-from ..view.sells_ui import sales_screen
 import tkinter as tk
 from tkinter import ttk
 

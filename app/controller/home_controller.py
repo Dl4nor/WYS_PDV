@@ -1,3 +1,4 @@
+'''
 from ..services.Pagbank_API import Pagbank_account_API
 import webbrowser
 
@@ -12,3 +13,4 @@ class homeController():
         auth_link = self.pbaAPI.get_auth_link_to_oauth2()
 
         webbrowser.open(auth_link)
+'''
