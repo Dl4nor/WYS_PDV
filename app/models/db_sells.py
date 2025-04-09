@@ -4,6 +4,7 @@ from ..services.Export_to_xlsx import exportToXlsx
 from ..controller.sells_controller import sellsController
 from ..models.db_controller import DBController
 import os
+import winsound
 from datetime import datetime, date
 import sqlite3
 
@@ -32,7 +33,7 @@ class DBSells():
         
             self.sController.clear_entries(parent)
             self.sController.total_calculate(parent)
-            self.notf.show_notification(r"app\assets\images\sell_succeed.png")
+            self._notify_sell_with_sound()
 
         except sqlite3.Error as e:
             print(f"(X) Erro: Venda não cadastrada - {e}")
@@ -46,6 +47,10 @@ class DBSells():
             os.makedirs(output_dir, exist_ok=True)
             
             self.expxlsx.export_sale_to_excel(date.today(), output_file)
+
+    def _notify_sell_with_sound(self):
+        self.notf.show_notification(r"app\assets\images\sell_succeed.png")
+        winsound.PlaySound(r"app\assets\sounds\catchin.wav", winsound.SND_FILENAME | winsound.SND_ASYNC)
 
     def get_id_from_new_sell(self):
         # Insere um item na tabela tb_sells

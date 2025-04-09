@@ -5,6 +5,7 @@ from ..models.db_sells import DBSells
 from ..models.db_storage import DBProducts
 from tkinter import ttk
 import customtkinter as ctk
+import winsound
 
 class sales_screen(ttk.Frame):
     def __init__(self, parent, mController):
