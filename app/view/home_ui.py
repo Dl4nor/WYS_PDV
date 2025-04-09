@@ -2,6 +2,7 @@ from ..utils.styles import *
 from ..utils.gnr_components import gnrComponents
 from ..view.sells_ui import sales_screen
 from ..view.storage_ui import storage_screen
+from ..utils.notifications import Notification
 from tkinter import ttk
 
 # Classe principal para gerar uma janela
@@ -10,6 +11,7 @@ class home_screen(ttk.Frame):
         super().__init__(parent)
         self.mController = mController # Classe mainController
         Components = gnrComponents(self.mController)
+        self.notf = Notification()
 
         self.main_frame = Components.main_frame_create(self)
         self.main_frame_widgets()
@@ -32,7 +34,8 @@ class home_screen(ttk.Frame):
             width=15,
             style='MainBt.TButton',
             padding=10,
-            command= lambda: self.mController.show_screen(sales_screen)
+            command= lambda: [self.mController.show_screen(sales_screen),
+                              self.notf.show_notification(img_path=r"app\assets\images\TelaVendas.png")]
         )
         self.sells_button.pack(pady=10)
 

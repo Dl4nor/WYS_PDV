@@ -1,13 +1,16 @@
 from ..controller.main_controller import mainController
 from ..utils.styles import *
+from ..utils.notifications import Notification
 from ..view.home_ui import home_screen
 import tkinter as tk
 from tkinter import ttk
+import customtkinter as ctk
 
 class Application:
     def __init__(self):
         self.controller = mainController()
-        self.window = tk.Tk()
+        self.window = ctk.CTk()
+        Notification.set_window(self.window)
         self.style = ttk.Style()
         ui_styles.style_configure(self)
         self.window_create()

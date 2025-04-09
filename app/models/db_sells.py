@@ -1,4 +1,5 @@
 from ..utils.detect_files import detectFiles
+from ..utils.notifications import Notification
 from ..services.Export_to_xlsx import exportToXlsx
 from ..controller.sells_controller import sellsController
 from ..models.db_controller import DBController
@@ -12,6 +13,7 @@ class DBSells():
         self.sController = sellsController()
         self.expxlsx = exportToXlsx()
         self.files = detectFiles()
+        self.notf = Notification()
         
     def add_sell(self, parent):
         # Adiciona uma nova venda efetuada
@@ -30,6 +32,7 @@ class DBSells():
         
             self.sController.clear_entries(parent)
             self.sController.total_calculate(parent)
+            self.notf.show_notification(r"app\assets\images\sell_succeed.png")
 
         except sqlite3.Error as e:
             print(f"(X) Erro: Venda não cadastrada - {e}")
