@@ -23,6 +23,7 @@ class Fonts():
     quantityFont = ('Arial', 28, "bold")
 
     treeviewTupleFont = ('Arial', 10, "")
+    reportTreeviewTupleFont = ('Garamond', 16, "bold")
     
     @staticmethod
     def resize_font(event, parent, widget, font, dividing):
@@ -91,7 +92,8 @@ class ui_styles():
             background=Colors.violetBackground,
             fieldbackground=Colors.violetBackground,
             foreground='black',
-            font=Fonts.treeviewTupleFont
+            font=Fonts.treeviewTupleFont,
+            rowheight=25
         )
         parent.style.map(
             'sellList.Treeview',
@@ -108,6 +110,43 @@ class ui_styles():
         parent.style.map(
             'sellList.Treeview.Heading',
             background = [('selected', Colors.violetButton), ('active', Colors.violetButton)]
+        )
+
+        # Definindo o estilo do Report Treeview
+        parent.style.configure(
+            'report.Treeview',
+            background=Colors.violetBackground,
+            fieldbackground=Colors.violetBackground,
+            foreground='black',
+            font=Fonts.reportTreeviewTupleFont,
+            rowheight=25
+        )
+        parent.style.map(
+            'report.Treeview',
+            background=[('selected', "#C77DFF")]
+        )
+        
+        parent.style.configure(
+            'report.Treeview.Heading',
+            background=Colors.violetBackground,
+            foreground='black',
+            font=Fonts.treeviewHeadFont
+        )
+
+        parent.style.map(
+            'report.Treeview.Heading',
+            background = [('selected', Colors.violetButton), ('active', Colors.violetButton)]
+        )
+
+        # Definindo estilo de date_combobox
+        parent.style.configure(
+            'date.TCombobox',
+            background=Colors.violetButton,
+            foreground='black',
+        )
+
+        parent.style.map("date.TCombobox",
+            fieldbackground=[("readonly", Colors.violetBackground)],
         )
 
         # Definindo o estilo do MainBt

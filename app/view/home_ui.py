@@ -2,6 +2,7 @@ from ..utils.styles import *
 from ..utils.gnr_components import gnrComponents
 from ..view.sells_ui import sales_screen
 from ..view.storage_ui import storage_screen
+from ..view.report_ui import report_screen
 from ..utils.notifications import Notification
 from tkinter import ttk
 
@@ -49,6 +50,17 @@ class home_screen(ttk.Frame):
                              self.notf.show_notification(r"app\assets\images\screen_storage.png")]
         )
         self.storage_button.pack(pady=10)
+
+        self.report_button = ttk.Button(
+            self.main_frame,
+            text="Tela de Relatórios",
+            width=15,
+            style='MainBt.TButton',
+            padding=10,
+            command=lambda: [self.mController.show_screen(report_screen),
+                             self.notf.show_notification(r"app\assets\images\screen_report.png")]
+        )
+        self.report_button.pack(pady=10)
 
         '''
         self.pagbank_login_button = ttk.Button(

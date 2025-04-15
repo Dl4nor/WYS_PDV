@@ -314,6 +314,7 @@ class sales_screen(ttk.Frame):
                 self.subtotal_entry: (Fonts.quantityFont, 25),
                 self.total_price_entry: (Fonts.quantityFont, 25),
                 self.barcode_entry: (Fonts.barcodeFont, 30),
+                self.barcode_label: (Fonts.infoTextFont, 60),
                 self.title: (Fonts.screenTitleFont, 15),
                 self.sellList_treeview: (Fonts.treeviewHeadFont, 60),
                 self.confirm_sell_button: (Fonts.sellsButtonFont, 60),

@@ -91,9 +91,9 @@ class storage_screen(ttk.Frame):
 
         self.storage_treeview.column("#0", width=0, stretch=False)
         self.storage_treeview.column("#1", width=60, minwidth=60, stretch=False, anchor="center")
-        self.storage_treeview.column("#2", width=100, minwidth=100, stretch=False, anchor="w")
+        self.storage_treeview.column("#2", width=115, minwidth=115, stretch=False, anchor="w")
         self.storage_treeview.column("#3", width=160, minwidth=160, anchor="w")
-        self.storage_treeview.column("#4", width=80, minwidth=80, stretch=False, anchor='w')
+        self.storage_treeview.column("#4", width=100, minwidth=100, stretch=False, anchor='w')
 
         self.storage_treeview.bind('<Motion>', self.handle_column_resize)
         self.storage_treeview.bind('<Double-1>', lambda event: self.controller.storage_treeview_bind_doubleclick(self, event))
@@ -207,10 +207,12 @@ class storage_screen(ttk.Frame):
             {
                 self.title: (Fonts.screenTitleFont, 15),
                 self.barcode_entry: (Fonts.barcodeFont, 30),
+                self.barcode_label: (Fonts.infoTextFont, 60),
                 self.delete_product_button: (Fonts.sellsButtonFont, 55),
                 self.add_product_button: (Fonts.sellsButtonFont, 55),
                 self.clear_entry_button: (Fonts.sellsButtonFont, 55),
                 self.product_price_entry: (Fonts.quantityFont, 20),
                 self.product_name_entry: (Fonts.productNameFont, 35),
+                self.storage_treeview: (Fonts.treeviewTupleFont, 60),
             }
         )
