@@ -19,6 +19,7 @@ class Fonts():
     sellsButtonFont = backButtonFont
     treeviewHeadFont = backButtonFont
     productNameFont = ('Arial', 12, "normal")
+    storeNameFont = ('Arial', 12, "bold")
     barcodeFont = ('Arial', 17, "bold")
     quantityFont = ('Arial', 28, "bold")
 
@@ -86,6 +87,15 @@ class ui_styles():
             padding=(10, 5)
         )
 
+        # Definindo o estilo do ReportFrame
+        parent.style.configure(
+            'FrameWidget.TFrame',
+            background='white',
+            bordercolor='black',
+            borderwidth=1,
+            relief='solid'
+        )
+
         # Definindo o estilo do SellListTreeview
         parent.style.configure(
             'sellList.Treeview',
@@ -119,7 +129,7 @@ class ui_styles():
             fieldbackground=Colors.violetBackground,
             foreground='black',
             font=Fonts.reportTreeviewTupleFont,
-            rowheight=25
+            rowheight=30
         )
         parent.style.map(
             'report.Treeview',
