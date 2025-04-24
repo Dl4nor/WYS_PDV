@@ -1,4 +1,4 @@
-from ..controller.sells_controller import sellsController
+from ..controller.report_controller import reportController
 from ..utils.gnr_components import gnrComponents
 from ..utils.styles import *
 from ..models.db_sells import DBSells
@@ -17,7 +17,7 @@ class report_screen(ttk.Frame):
     def __init__(self, parent, mController):
         super().__init__(parent)
         self.mController = mController  # Classe mainController
-        self.controller = sellsController()
+        self.rcontroller = reportController()
 
         self.Components = gnrComponents(self.mController)
         self.bdP = DBProducts()
@@ -136,7 +136,12 @@ class report_screen(ttk.Frame):
             text="Buscar",
             style='Clear.TButton',
             padding=2,
-            command= lambda: print("Buscando...")
+            command= lambda: self.rcontroller.bind_search_reports_button(
+                self.treeview_reports, 
+                self.day_combobox.get(), 
+                self.month_combobox.get(), 
+                self.year_combobox.get()
+            )
         )
         self.date_search_button.place(rely=0.6, relx=0.01, relheight=0.4, relwidth=0.98)
     
@@ -155,7 +160,7 @@ class report_screen(ttk.Frame):
         )
         self.treeview_reports.heading("#0", text="Relatórios de Vendas")
         self.treeview_reports.place(rely=0.01, relx=0.01, relheight=0.55, relwidth=0.98)
-        self.insert_folders(r"Fechamentos")
+        self.rcontroller.bind_search_reports_button(self.treeview_reports, "Todos", "Todos", datetime.now().year)
 
         self.textbox_store_name = ctk.CTkEntry(
             self.treeview_frame,
@@ -205,18 +210,6 @@ class report_screen(ttk.Frame):
             command= lambda: print("aaa")
         )
         self.report_download_button.place(rely=0.9, relx=0.01, relheight=0.09, relwidth=0.98)
-
-    def insert_folders(self, base_path):
-        for folder in os.listdir(base_path):
-            folder_path = os.path.join(base_path, folder)
-            if os.path.isdir(folder_path):
-                # Adiciona o mês/ano como pasta principal
-                parent_id = self.treeview_reports.insert("", "end", text=folder)
-
-                # Adiciona os arquivos .xlsx como filhos
-                for file in os.listdir(folder_path):
-                    if file.endswith(".xlsx"):
-                        self.treeview_reports.insert(parent_id, "end", text=f"{file.replace('.xlsx', '')}")
 
     def report_frame_create(self):
         # Cria o frame de informações da atual venda
