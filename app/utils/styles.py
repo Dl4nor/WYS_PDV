@@ -25,6 +25,9 @@ class Fonts():
 
     treeviewTupleFont = ('Arial', 10, "")
     reportTreeviewTupleFont = ('Garamond', 16, "bold")
+
+    relTitle = "Helvetica-Bold"
+    relfont = "Times"
     
     @staticmethod
     def resize_font(event, parent, widget, font, dividing):

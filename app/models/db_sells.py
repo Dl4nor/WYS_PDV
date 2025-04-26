@@ -39,7 +39,7 @@ class DBSells():
             print(f"(X) Erro: Venda não cadastrada - {e}")
         finally:
             output_dir = f"Fechamentos/{date.today().month} - {date.today().year}/"
-            output_file = os.path.join(output_dir, f"Vendas - {date.today()}.xlsx")
+            output_file = os.path.join(output_dir, f"Vendas - {date.today().day}-{date.today().month}-{date.today().year}.xlsx")
 
             self.files.wait_and_close_file(output_file)
 

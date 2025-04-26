@@ -3,6 +3,7 @@ from ..utils.gnr_components import gnrComponents
 from ..utils.styles import *
 from ..models.db_sells import DBSells
 from ..models.db_storage import DBProducts
+from ..services.report_PDF import reportPDF
 from datetime import datetime
 import calendar
 import os
@@ -23,6 +24,8 @@ class report_screen(ttk.Frame):
         self.bdP = DBProducts()
         self.dbS = DBSells()
 
+        self.pdf = reportPDF()
+
         self.Components.upper_frame_construct(self)
         self.main_frame = self.Components.main_frame_create(self)
         self.main_frame_widget()
@@ -34,18 +37,6 @@ class report_screen(ttk.Frame):
         self.treeview_frame_widgets()
 
         self.resize_controller()
-
-        # self.barcode_frame_widget()
-        # self.quantity_frame_create()
-        # self.quantity_frame_widgets()
-        # self.shortcut_frame_create()
-        # self.shortcut_frame_widget()
-        # self.sellList_frame_create()
-        # self.sellList_frame_widget()
-        # self.product_name_frame_create()
-        # self.product_name_frame_widget()
-        # #
-        # self.resize_controller()
 
     def main_frame_widget(self):
         # Criar título
@@ -117,10 +108,32 @@ class report_screen(ttk.Frame):
                 days = ["Todos"] + [str(day).zfill(2) for day in range(1, num_days + 1)]
                 self.day_combobox.config(values=days)
             self.day_combobox.set("Todos")
-    
+
+    def on_date_combo_select(self):
+        # Defini a fnção para quando uma combobox é selecionada
+
+        for combobox in [self.month_combobox, self.year_combobox]:
+            combobox.bind("<<ComboboxSelected>>", lambda e: (
+                self._update_days_combobox(),
+                self.rcontroller.bind_search_reports_button(
+                    self.treeview_reports,
+                    self.day_combobox.get(),
+                    self.month_combobox.get(),
+                    self.year_combobox.get()
+                )
+            )) 
+
+        self.day_combobox.bind("<<ComboboxSelected>>", lambda e: self.rcontroller.bind_search_reports_button(
+            self.treeview_reports,
+            self.day_combobox.get(),
+            self.month_combobox.get(),
+            self.year_combobox.get()
+        ))
+
     def date_frame_widgets(self):
 
         self.date_combo_create()
+        self.on_date_combo_select()
 
         self.date_label = ttk.Label(
             self.date_filter_frame,
@@ -160,6 +173,7 @@ class report_screen(ttk.Frame):
         )
         self.treeview_reports.heading("#0", text="Relatórios de Vendas")
         self.treeview_reports.place(rely=0.01, relx=0.01, relheight=0.55, relwidth=0.98)
+        self.on_treeview_tuple_select()
         self.rcontroller.bind_search_reports_button(self.treeview_reports, "Todos", "Todos", datetime.now().year)
 
         self.textbox_store_name = ctk.CTkEntry(
@@ -189,7 +203,11 @@ class report_screen(ttk.Frame):
             text="Gerar relatório diário",
             style='Clear.TButton',
             padding=2,
-            command= lambda: print("aaa")
+            command= lambda: self.rcontroller.bind_daily_report_button(
+                self.report_path, 
+                self.textbox_store_name.get(),
+                self.report_date
+            )
         )
         self.report_day_button.place(rely=0.71, relx=0.01, relheight=0.08, relwidth=0.98)
 
@@ -198,18 +216,58 @@ class report_screen(ttk.Frame):
             text="Gerar relatório mensal",
             style='Clear.TButton',
             padding=2,
-            command= lambda: print("aaa")
+            command= lambda: self.rcontroller.bind_monthly_report_button(
+                self.report_path,
+                self.textbox_store_name.get(),
+                self.report_date
+            )
         )
         self.report_month_button.place(rely=0.8, relx=0.01, relheight=0.08, relwidth=0.98)
         
         self.report_download_button = ttk.Button(
             self.treeview_frame,
-            text="Baixar relatório",
+            text="Baixar relatório em PDF",
             style='ConfirmSell.TButton',
             padding=2,
             command= lambda: print("aaa")
         )
         self.report_download_button.place(rely=0.9, relx=0.01, relheight=0.09, relwidth=0.98)
+    
+    def on_treeview_tuple_select(self):
+        # define o bind para selecionar uma tupla do treeview
+
+        self.treeview_reports.bind("<<TreeviewSelect>>", lambda e: self._on_treeview_select(e))
+
+    def _on_treeview_select(self, event):
+        # Evento que aciona ao clicar em uma túpla da treeview
+        
+        tree = event.widget
+        selected_item = tree.selection()
+
+        if not selected_item:
+            return
+
+        item_id = selected_item[0]
+        parent_id = tree.parent(item_id)
+        item_text = tree.item(item_id, "text").replace(".xlsx", "").replace("Vendas - ", "")
+        parent_text = tree.item(parent_id, "text")
+        
+        report_path = f"Relatorios"
+        if parent_id != "":
+            report_path += f"/{parent_text}"
+            os.makedirs(report_path, exist_ok=True)
+            date = item_text.replace("Vendas - ", "").replace("-", " / ")
+            report_path += f"/Relatório do dia - {item_text}.pdf"
+        else:
+            report_path += f"/{item_text}"
+            os.makedirs(report_path, exist_ok=True)
+            date = item_text.replace("-", " / ")
+            report_path += f"/Relatóio do mês - {item_text.replace(" - ", "-")}.pdf"
+        
+        self.report_path = report_path
+        self.report_date = date
+
+        print(f"rep_path: {self.report_path} --> rep_date: {self.report_date}")
 
     def report_frame_create(self):
         # Cria o frame de informações da atual venda
