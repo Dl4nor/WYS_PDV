@@ -3,8 +3,13 @@ from ..utils.notifications import Notification
 from ..controller.main_controller import mainController
 from ..services.report_PDF import reportPDF
 from ..models.db_report import DBReports
+from tkinter import filedialog
 from datetime import datetime
+from PIL import Image, ImageTk
+import fitz
+import shutil
 import os
+import io
 
 class reportController():
     def __init__(self):
@@ -77,7 +82,7 @@ class reportController():
             return
         
         relType = "dia"
-        sellsDatetime = datetime.strptime(printDate.strip(), "%Y / %m / %d").date()
+        sellsDatetime = datetime.strptime(printDate.strip(), "%d / %m / %Y").date()
         data = self.dbr.search_d_sells_by_date(sellsDatetime)
         dic_data = self.transform_data_to_dict(data)
         self.pdf.create_report(dic_data, file_path, relType, storeName, printDate)
@@ -111,7 +116,71 @@ class reportController():
             })
         
         return dic_data
-            
+    
+    def move_report(self, origin_path):
+        # Move o report da pasta temporária para odestino que o usuário escolher
+
+        if not origin_path:
+            return
+
+        desktop = os.path.join(os.path.expanduser("~"), "Desktop")
+        file_name = os.path.basename(origin_path)
+
+        final_path = filedialog.asksaveasfilename(
+            defaultextension=".pdf",
+            filetypes=[("Todos os arquivos", "*.*")],
+            title="Escolha onde salvar o relatório",
+            initialdir=desktop,
+            initialfile=file_name
+        )
+
+        if final_path:
+            shutil.move(origin_path, final_path)
+            print(f"Arquivo movido de: {origin_path}")
+            print(f"Para: {final_path}")
+            return final_path
+
+    def bind_download_report_button(self, origin_path):
+        # bind do botão "Baixar relatório" no report_ui
+
+        file_path = self.move_report(origin_path)
+        if file_path:
+            self.pdf.print_report(file_path)
+
+    def get_tkimage_from_pdf(self, pdf_path, frame, page=0):
+        # Retorna o tk_image do report_pdf
+
+        doc = fitz.open(pdf_path)
+        page = doc.load_page(page)
+
+        # Renderiza a página como uma imagem
+        pixmap = page.get_pixmap(dpi=150)  # Melhor qualidade que o padrão (72 dpi)
+
+        # Converte o pixmap em imagem PIL
+        img_bytes = pixmap.tobytes("ppm")  # PPM é imagem em memória compatível
+        img = Image.open(io.BytesIO(img_bytes))
+        doc.close()
+
+        # Atualiza o frame para ter certeza que temos o tamanho correto
+        frame.update_idletasks()
+        frame_width = frame.winfo_width()
+        frame_height = frame.winfo_height()
+
+        # Calcula escala proporcional
+        img_width, img_height = img.size
+        ratio = max(frame_width / img_width, frame_height / img_height)  # Usa max para dar zoom até preencher
+        new_width = int(img_width * ratio)
+        new_height = int(img_height * ratio)
+
+        # Redimensiona a imagem para caber no frame
+        img = img.resize((new_width, new_height), Image.LANCZOS)
+
+        # Converte para ImageTk
+        tk_image = ImageTk.PhotoImage(img)
+
+        return tk_image
+
+
 
 
 

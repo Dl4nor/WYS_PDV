@@ -3,8 +3,8 @@ from tkinter import ttk
 import customtkinter as ctk
 
 class Colors():
-    violetBackground = '#E0AAFF'
-    violetButton = '#9D4EDD'
+    violetBackground = '#fbe4ff'
+    violetButton = '#d1b1ff'
     xlsxHeader = '#C77DFF'
 
 class Fonts():
@@ -165,7 +165,7 @@ class ui_styles():
         # Definindo o estilo do MainBt
         parent.style.configure(
             'MainBt.TButton', 
-            background='#C77DFF', 
+            background=Colors.violetButton, 
             foreground='black', 
             focuscolor='',
             font=Fonts.mainButtonFont

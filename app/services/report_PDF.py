@@ -80,7 +80,6 @@ class reportPDF():
         c.drawRightString(560, y - 10, f"TOTAL     R$ {total:.2f}".replace(".", ","))
 
         c.save()
-        self.print_report(file_path)
         print(f"Relatório gerado em: {file_path}")
 
     def print_report(self, file_path):

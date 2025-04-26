@@ -6,13 +6,11 @@ from ..models.db_storage import DBProducts
 from ..services.report_PDF import reportPDF
 from datetime import datetime
 import calendar
+import tempfile
 import os
 import tkinter as tk
 from tkinter import ttk
 import customtkinter as ctk
-
-# import fitz
-from PIL import Image, ImageTk
 
 class report_screen(ttk.Frame):
     def __init__(self, parent, mController):
@@ -23,7 +21,6 @@ class report_screen(ttk.Frame):
         self.Components = gnrComponents(self.mController)
         self.bdP = DBProducts()
         self.dbS = DBSells()
-
         self.pdf = reportPDF()
 
         self.Components.upper_frame_construct(self)
@@ -138,7 +135,7 @@ class report_screen(ttk.Frame):
         self.date_label = ttk.Label(
             self.date_filter_frame,
             background=Colors.violetButton,
-            foreground='lightgray',
+            foreground='black',
             font=Fonts.infoTextFont,
             text="Insira uma data"
         )
@@ -192,7 +189,7 @@ class report_screen(ttk.Frame):
         self.label_store_name = ttk.Label(
             self.treeview_frame,
             background=Colors.violetButton,
-            foreground='lightgray',
+            foreground='black',
             font=Fonts.infoTextFont,
             text="Nome da loja:"
         )
@@ -203,11 +200,11 @@ class report_screen(ttk.Frame):
             text="Gerar relatório diário",
             style='Clear.TButton',
             padding=2,
-            command= lambda: self.rcontroller.bind_daily_report_button(
+            command= lambda: (self.rcontroller.bind_daily_report_button(
                 self.report_path, 
                 self.textbox_store_name.get(),
                 self.report_date
-            )
+            ), self.update_report_frame_image())
         )
         self.report_day_button.place(rely=0.71, relx=0.01, relheight=0.08, relwidth=0.98)
 
@@ -216,11 +213,11 @@ class report_screen(ttk.Frame):
             text="Gerar relatório mensal",
             style='Clear.TButton',
             padding=2,
-            command= lambda: self.rcontroller.bind_monthly_report_button(
+            command= lambda: (self.rcontroller.bind_monthly_report_button(
                 self.report_path,
                 self.textbox_store_name.get(),
                 self.report_date
-            )
+            ), self.update_report_frame_image())
         )
         self.report_month_button.place(rely=0.8, relx=0.01, relheight=0.08, relwidth=0.98)
         
@@ -229,7 +226,7 @@ class report_screen(ttk.Frame):
             text="Baixar relatório em PDF",
             style='ConfirmSell.TButton',
             padding=2,
-            command= lambda: print("aaa")
+            command= lambda: self.rcontroller.bind_download_report_button(self.report_path)
         )
         self.report_download_button.place(rely=0.9, relx=0.01, relheight=0.09, relwidth=0.98)
     
@@ -252,17 +249,18 @@ class report_screen(ttk.Frame):
         item_text = tree.item(item_id, "text").replace(".xlsx", "").replace("Vendas - ", "")
         parent_text = tree.item(parent_id, "text")
         
-        report_path = f"Relatorios"
+        report_path = tempfile.gettempdir()
+        report_path = os.path.join(report_path, "wys_reports")
         if parent_id != "":
-            report_path += f"/{parent_text}"
+            report_path += fr"\{parent_text}"
             os.makedirs(report_path, exist_ok=True)
             date = item_text.replace("Vendas - ", "").replace("-", " / ")
-            report_path += f"/Relatório do dia - {item_text}.pdf"
+            report_path += fr"\Relatório do dia - {item_text}.pdf"
         else:
-            report_path += f"/{item_text}"
+            report_path += fr"\{item_text}"
             os.makedirs(report_path, exist_ok=True)
             date = item_text.replace("-", " / ")
-            report_path += f"/Relatóio do mês - {item_text.replace(" - ", "-")}.pdf"
+            report_path += fr"\Relatóio do mês - {item_text.replace(" - ", "-")}.pdf"
         
         self.report_path = report_path
         self.report_date = date
@@ -273,13 +271,57 @@ class report_screen(ttk.Frame):
         # Cria o frame de informações da atual venda
 
         self.report_frame = ttk.Frame(self, padding=10, style='BarcodeFrame.TFrame')
-        self.report_frame.place(rely=0.15, relx=0.01, relheight=0.81, relwidth=0.7)  
+        self.report_frame.place(rely=0.15, relx=0.01, relheight=0.81, relwidth=0.7) 
 
     def report_frame_widgets(self):
         # Cria os widgets do report frame
 
-        self.report_view_frame = ttk.Frame(self.report_frame, padding=10, style='FrameWidget.TFrame')
+        self.report_view_frame = ttk.Frame(self.report_frame, style='FrameWidget.TFrame')
         self.report_view_frame.place(rely=0.01, relx=0.01, relheight=0.98, relwidth=0.98)
+
+
+    def update_report_frame_image(self):
+
+        # Limpa o frame antes
+        for widget in self.report_view_frame.winfo_children():
+            widget.destroy()
+
+        # Cria Canvas e Scrollbar vertical
+        self.canvas = tk.Canvas(self.report_view_frame, highlightthickness=0)
+        y_scroll = ttk.Scrollbar(self.report_view_frame, orient="vertical", command=self.canvas.yview)
+
+        self.canvas.configure(yscrollcommand=y_scroll.set)
+
+        self.canvas.place(rely=0.01, relx=0.01, relheight=0.98, relwidth=0.98)
+        y_scroll.pack(side="right", fill="y")
+
+        self.tk_report = self.rcontroller.get_tkimage_from_pdf(self.report_path, self.report_view_frame)
+
+        if self.tk_report:
+            # Insere a imagem no Canvas
+            self.image_id = self.canvas.create_image(0, 0, anchor="nw", image=self.tk_report)
+            self.canvas.image = self.tk_report  # Mantém referência
+
+            # Define o tamanho do scroll
+            self.canvas.config(scrollregion=self.canvas.bbox("all"))
+
+            # Habilita o scroll do mouse
+            def _on_mousewheel(event):
+                self.canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+
+            self.canvas.bind("<MouseWheel>", _on_mousewheel)
+        
+            self.canvas.bind("<Configure>", self._on_canvas_resize)
+
+    def _on_canvas_resize(self, event):
+        if hasattr(self, "report_path") and hasattr(self, "canvas"):
+            # Recarrega a imagem redimensionada no novo tamanho do Canvas
+            self.tk_report = self.rcontroller.get_tkimage_from_pdf(self.report_path, self.report_view_frame)
+            if self.tk_report:
+                self.canvas.delete("all")
+                self.image_id = self.canvas.create_image(0, 0, anchor="nw", image=self.tk_report)
+                self.canvas.image = self.tk_report
+                self.canvas.config(scrollregion=self.canvas.bbox("all"))
 
     def resize_controller(self):
         self.mController.bind_resizeFont_event(
@@ -293,8 +335,8 @@ class report_screen(ttk.Frame):
                 self.report_day_button: (Fonts.sellsButtonFont, 50),
                 self.report_month_button: (Fonts.sellsButtonFont, 50),
                 self.report_download_button: (Fonts.sellsButtonFont, 50),
-                self.treeview_reports: (Fonts.reportTreeviewTupleFont, 45)
-
+                self.treeview_reports: (Fonts.reportTreeviewTupleFont, 45),
+                self.textbox_store_name: (Fonts.storeNameFont, 45)
             }
         )
 
