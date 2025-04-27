@@ -6,6 +6,7 @@ from ..models.db_report import DBReports
 from tkinter import filedialog
 from datetime import datetime
 from PIL import Image, ImageTk
+import sys
 import fitz
 import shutil
 import os
@@ -18,6 +19,7 @@ class reportController():
         self.mController = mainController()
         self.notf = Notification()
         self.pdf = reportPDF()
+        self.xlsx_dir = self.get_xlsx_dir_path()
         self.month_map = {
             "Janeiro": "1", "Fevereiro": "2", "Março": "3", "Abril": "4",
             "Maio": "5", "Junho": "6", "Julho": "7", "Agosto": "8",
@@ -30,6 +32,19 @@ class reportController():
         for item in treeview.get_children():
             treeview.delete(item)
 
+    def get_xlsx_dir_path(self):
+        # Recupera o caminho completo de "fechamentos\"
+        
+        if getattr(sys, 'frozen', False):
+            base_dir = os.path.join(os.environ["LOCALAPPDATA"], "WYS_PDV")
+        else:
+            base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+
+        xlsx_dir = os.path.join(base_dir, f"fechamentos")
+        os.makedirs(xlsx_dir, exist_ok=True)
+
+        return xlsx_dir
+
     def search_reportFiles_by_date(self, month, year):
         # Procura os arquivos .xlsx de acordo com a data
 
@@ -37,18 +52,17 @@ class reportController():
             print("Mês não selecionado!")
             return
 
-        base_dir = f"fechamentos/"
         result_paths = []
 
         if month == "Todos":
             # Verifica todas as pastas do ano
-            for folder in os.listdir(base_dir):
+            for folder in os.listdir(self.xlsx_dir):
                 if folder.endswith(f"- {year}"):
-                    result_paths.append(os.path.join(base_dir, folder))
+                    result_paths.append(os.path.join(self.xlsx_dir, folder))
         else:
             month_num = self.month_map.get(month)
             folder_name = f"{month_num} - {year}"
-            full_path = os.path.join(base_dir, folder_name)
+            full_path = os.path.join(self.xlsx_dir, folder_name)
             if os.path.exists(full_path):
                 result_paths.append(full_path)
 
@@ -86,6 +100,12 @@ class reportController():
         data = self.dbr.search_d_sells_by_date(sellsDatetime)
         dic_data = self.transform_data_to_dict(data)
         self.pdf.create_report(dic_data, file_path, relType, storeName, printDate)
+
+    def delete_temp(self, temp_path):
+        # Deleta a pasta temp
+        if os.path.exists(temp_path):
+            shutil.rmtree(temp_path)
+            print("Pasta temp deletada")
 
     def bind_monthly_report_button(self, file_path, storeName, printDate):
         # bind do botão "Gerar relatório diário" no report_ui
@@ -146,6 +166,8 @@ class reportController():
         file_path = self.move_report(origin_path)
         if file_path:
             self.pdf.print_report(file_path)
+            temp_path = os.path.dirname(os.path.dirname(origin_path))
+            self.delete_temp(temp_path)
 
     def get_tkimage_from_pdf(self, pdf_path, frame, page=0):
         # Retorna o tk_image do report_pdf

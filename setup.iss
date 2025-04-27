@@ -19,7 +19,7 @@ Name: desktopicon; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm
 
 [Files]
 Source: "dist\WYS_PDV.exe"; DestDir: "{app}\dist\"; DestName: "WYS_PDV.exe"; Flags: ignoreversion
-Source: "dist\register_deep_link.exe"; DestDir: "{app}\dist\"; Flags: ignoreversion
+Source: "Fechamentos"; DestDir: "{app}\dist\"; Flags: ignoreversion
 Source: "build\main\*"; DestDir: "{app}\build\main\"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "app\assets\*"; DestDir: "{app}\assets\"; Flags: ignoreversion recursesubdirs createallsubdirs
 

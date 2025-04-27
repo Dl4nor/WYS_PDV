@@ -1,6 +1,9 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk
 from ..utils.styles import *
+import winsound
+import os
+import sys
 
 class Notification():
 
@@ -13,7 +16,15 @@ class Notification():
     def __init__(self):
         self.main_toplevel = Notification.window
 
-    def show_notification(self, img_path):
+    def show_notification(self, img_file):
+        if hasattr(sys, '_MEIPASS'):
+            # Estamos rodando como .exe
+            base_path = sys._MEIPASS
+        else:
+            # Estamos rodando no modo de desenvolvimento (debug)
+            base_path = os.path.abspath(".")
+
+        img_path = os.path.join(base_path, "app", "assets", "images", img_file)
         notif = ctk.CTkToplevel(self.main_toplevel)
         notif.overrideredirect(True)
         notif.attributes("-topmost", True)
@@ -63,3 +74,17 @@ class Notification():
                 notif.destroy()
 
         slide_in()
+
+    def playsound(self, sound_file):
+        # Toca sons
+
+        if hasattr(sys, '_MEIPASS'):
+            # Estamos rodando como .exe
+            base_path = sys._MEIPASS
+        else:
+            # Estamos rodando no modo de desenvolvimento (debug)
+            base_path = os.path.abspath(".")
+
+        sound_path = os.path.join(base_path, "app", "assets", "sounds", sound_file)
+        
+        winsound.PlaySound(sound_path, winsound.SND_FILENAME | winsound.SND_ASYNC)

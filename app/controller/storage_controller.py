@@ -4,7 +4,6 @@ from ..utils.notifications import Notification
 from ..controller.main_controller import mainController
 from ..services.OFoodF_API import OpenFoodFacts_API
 import tkinter as tk
-import winsound
 
 class storageController():
     def __init__(self):
@@ -91,7 +90,7 @@ class storageController():
         if product:
             self.dbP.update_product(product_info)
             print(f"[OK] O produto '{product_info['product_name']}' foi atualizado com sucesso!")
-            self.notf.show_notification(r"app\assets\images\add_product.png")
+            self.notf.show_notification("add_product.png")
         else:
             self.dbP.add_product(
                 product_info["barcode"],
@@ -99,9 +98,9 @@ class storageController():
                 product_info["price"]
             )
             print(f"[OK] O produto '{product_info['product_name']}' foi adicionado com sucesso!")
-            self.notf.show_notification(r"app\assets\images\add_product.png")
+            self.notf.show_notification("add_product.png")
 
-        winsound.PlaySound(r"app\assets\sounds\add_product.wav", winsound.SND_FILENAME | winsound.SND_ASYNC)
+        self.notf.playsound("add_product.wav")
 
         self.clear_entries(parent)
         self.get_storage_to_treeview(parent)
@@ -122,8 +121,8 @@ class storageController():
         parent.barcode_entry.focus_set()
 
     def _notify_delete_with_sound(self):
-        self.notf.show_notification(r"app\assets\images\delete_product.png")
-        winsound.PlaySound(r"app\assets\sounds\trash_sound.wav", winsound.SND_FILENAME | winsound.SND_ASYNC)
+        self.notf.show_notification("delete_product.png")
+        self.notf.playsound("trash_sound.wav")
 
     def clear_entries(self, parent):
         parent.barcode_entry.delete(0, tk.END)
@@ -133,7 +132,7 @@ class storageController():
     def clear_button_click(self, parent):
         self.clear_entries(parent)
         self.get_storage_to_treeview(parent)
-        self.notf.show_notification(r"app\assets\images\clear_entrance.png")
+        self.notf.show_notification("clear_entrance.png")
         parent.barcode_entry.focus_set()
 
     def get_searched_storage(self, parent):

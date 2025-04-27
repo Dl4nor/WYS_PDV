@@ -23,6 +23,7 @@ class mainController():
         self.container = container
 
     def icon_define(self):
+        
         # Caminho absoluto para o ícone
         script_dir = os.path.dirname(__file__)  # Diretório onde o script está
         icon_path = os.path.join(script_dir, "..", "assets", "icons", "wys_t_icon.ico")

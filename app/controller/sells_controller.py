@@ -1,7 +1,6 @@
 from ..models.db_storage import DBProducts
 from ..controller.main_controller import mainController
 from ..utils.notifications import Notification
-import winsound
 import tkinter as tk
 
 class sellsController():
@@ -147,13 +146,13 @@ class sellsController():
         if selected_items:
             for item in selected_items:
                 parent.sellList_treeview.delete(item)
-            self.notf.show_notification(r"app\assets\images\product_canceled.png")
+            self.notf.show_notification("product_canceled.png")
         # Caso não, estorna a lista completa
         else:
             parent.sellList_treeview.delete(*parent.sellList_treeview.get_children())
-            self.notf.show_notification(r"app\assets\images\sell_canceled.png")
+            self.notf.show_notification("sell_canceled.png")
 
-        winsound.PlaySound(r"app\assets\sounds\cancel_sound.wav", winsound.SND_FILENAME | winsound.SND_ASYNC)
+        self.notf.playsound("cancel_sound.wav")
         
         parent.barcode_entry.focus_set()
         self.clear_entries(parent)

@@ -3,8 +3,8 @@ from ..utils.notifications import Notification
 from ..services.Export_to_xlsx import exportToXlsx
 from ..controller.sells_controller import sellsController
 from ..models.db_controller import DBController
+from ..controller.report_controller import reportController
 import os
-import winsound
 from datetime import datetime, date
 import sqlite3
 
@@ -15,6 +15,7 @@ class DBSells():
         self.expxlsx = exportToXlsx()
         self.files = detectFiles()
         self.notf = Notification()
+        self.xlsx_base_path = reportController().xlsx_dir
         
     def add_sell(self, parent):
         # Adiciona uma nova venda efetuada
@@ -38,7 +39,7 @@ class DBSells():
         except sqlite3.Error as e:
             print(f"(X) Erro: Venda não cadastrada - {e}")
         finally:
-            output_dir = f"Fechamentos/{date.today().month} - {date.today().year}/"
+            output_dir = os.path.join(self.xlsx_base_path, f"{date.today().month} - {date.today().year}/")
             output_file = os.path.join(output_dir, f"Vendas - {date.today().day}-{date.today().month}-{date.today().year}.xlsx")
 
             self.files.wait_and_close_file(output_file)
@@ -49,8 +50,8 @@ class DBSells():
             self.expxlsx.export_sale_to_excel(date.today(), output_file)
 
     def _notify_sell_with_sound(self):
-        self.notf.show_notification(r"app\assets\images\sell_succeed.png")
-        winsound.PlaySound(r"app\assets\sounds\catchin.wav", winsound.SND_FILENAME | winsound.SND_ASYNC)
+        self.notf.show_notification("sell_succeed.png")
+        self.notf.playsound("catchin.wav")
 
     def get_id_from_new_sell(self):
         # Insere um item na tabela tb_sells

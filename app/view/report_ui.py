@@ -5,12 +5,13 @@ from ..models.db_sells import DBSells
 from ..models.db_storage import DBProducts
 from ..services.report_PDF import reportPDF
 from datetime import datetime
-import calendar
-import tempfile
-import os
 import tkinter as tk
 from tkinter import ttk
 import customtkinter as ctk
+import webbrowser
+import calendar
+import tempfile
+import os
 
 class report_screen(ttk.Frame):
     def __init__(self, parent, mController):
@@ -170,7 +171,7 @@ class report_screen(ttk.Frame):
         )
         self.treeview_reports.heading("#0", text="Relatórios de Vendas")
         self.treeview_reports.place(rely=0.01, relx=0.01, relheight=0.55, relwidth=0.98)
-        self.on_treeview_tuple_select()
+        self.treeview_report_bind_config()
         self.rcontroller.bind_search_reports_button(self.treeview_reports, "Todos", "Todos", datetime.now().year)
 
         self.textbox_store_name = ctk.CTkEntry(
@@ -230,10 +231,11 @@ class report_screen(ttk.Frame):
         )
         self.report_download_button.place(rely=0.9, relx=0.01, relheight=0.09, relwidth=0.98)
     
-    def on_treeview_tuple_select(self):
+    def treeview_report_bind_config(self):
         # define o bind para selecionar uma tupla do treeview
 
         self.treeview_reports.bind("<<TreeviewSelect>>", lambda e: self._on_treeview_select(e))
+        self.treeview_reports.bind("<Double-1>", lambda e: self._on_treeview_double_click(e))
 
     def _on_treeview_select(self, event):
         # Evento que aciona ao clicar em uma túpla da treeview
@@ -266,6 +268,27 @@ class report_screen(ttk.Frame):
         self.report_date = date
 
         print(f"rep_path: {self.report_path} --> rep_date: {self.report_date}")
+
+    def _on_treeview_double_click(self, event):
+        selected_item = self.treeview_reports.selection()
+        if not selected_item:
+            return
+        
+        item_text = self.treeview_reports.item(selected_item, "text")
+        children = self.treeview_reports.get_children(selected_item)
+        
+        if children:
+            return
+
+        parent_item = self.treeview_reports.parent(selected_item)
+        parent_text = self.treeview_reports.item(parent_item, "text")
+
+        xlsx_path = os.path.join(self.rcontroller.xlsx_dir, parent_text, f"{item_text}.xlsx")
+
+        if os.path.exists(xlsx_path):
+            webbrowser.open(f'file:///{xlsx_path}')
+
+        print(f"Arquivo xlsx em: {xlsx_path}")
 
     def report_frame_create(self):
         # Cria o frame de informações da atual venda

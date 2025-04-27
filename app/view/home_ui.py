@@ -36,7 +36,7 @@ class home_screen(ttk.Frame):
             style='MainBt.TButton',
             padding=10,
             command= lambda: [self.mController.show_screen(sales_screen),
-                              self.notf.show_notification(r"app\assets\images\screen_sales.png")]
+                              self.notf.show_notification("screen_sales.png")]
         )
         self.sells_button.pack(pady=10)
 
@@ -47,7 +47,7 @@ class home_screen(ttk.Frame):
             style='MainBt.TButton',
             padding=10,
             command=lambda: [self.mController.show_screen(storage_screen),
-                             self.notf.show_notification(r"app\assets\images\screen_storage.png")]
+                             self.notf.show_notification("screen_storage.png")]
         )
         self.storage_button.pack(pady=10)
 
@@ -58,7 +58,7 @@ class home_screen(ttk.Frame):
             style='MainBt.TButton',
             padding=10,
             command=lambda: [self.mController.show_screen(report_screen),
-                             self.notf.show_notification(r"app\assets\images\screen_report.png")]
+                             self.notf.show_notification("screen_report.png")]
         )
         self.report_button.pack(pady=10)
 
